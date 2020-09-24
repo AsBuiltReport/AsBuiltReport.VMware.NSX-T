@@ -1,6 +1,6 @@
 function Invoke-AsBuiltReport.VMware.NSX-T {
     <#
-    .SYNOPSIS  
+    .SYNOPSIS
         PowerShell script to document the configuration of VMware NSX-T infrastucture in Word/HTML/Text formats
     .DESCRIPTION
         Documents the configuration of VMware NSX-T infrastucture in Word/HTML/Text formats using PScribo.
@@ -38,7 +38,7 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
     #                                         SCRIPT BODY                                         #
     #---------------------------------------------------------------------------------------------#
     # Connect to vCenter Server using supplied credentials
-    foreach ($NsxManager in $Target) { 
+    foreach ($NsxManager in $Target) {
 
     } # End of Foreach $NsxManager
     #endregion Script Body
