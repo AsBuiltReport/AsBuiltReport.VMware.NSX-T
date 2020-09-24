@@ -19,13 +19,6 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
         [PSCredential] $Credential
     )
 
-    # Check if VMware PowerCLI 10.0 or higher is installed
-    $RequiredModules = Get-Module -ListAvailable -Name 'VMware.PowerCLI' | Sort-Object -Property Version -Descending | Select-Object -First 1
-    if ($RequiredModules.Version.Major -lt 10) {
-        Write-Warning -Message "VMware PowerCLI 10.0 or higher is required to run the VMware vSphere As Built Report. Run 'Install-Module -Name VMware.PowerCLI -MinimumVersion 10.0' to install the required modules."
-        break
-    }
-
     # Import Report Configuration
     $Report = $ReportConfig.Report
     $InfoLevel = $ReportConfig.InfoLevel
