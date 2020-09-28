@@ -30,9 +30,16 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
     #---------------------------------------------------------------------------------------------#
     #                                         SCRIPT BODY                                         #
     #---------------------------------------------------------------------------------------------#
-    # Connect to vCenter Server using supplied credentials
+    # Connect to NSX-T Manager using supplied credentials
     foreach ($NsxManager in $Target) {
+        Connect-NSXT $nsxManager -credential $Credential -SkipCertificate
 
+        $node = Invoke-NSXTRestMethod "api/v1/node"
+
+        Section -Style Heading2 'Node (NSX-T Manger) Information' {
+            $node | Table
+        }
+        Disconnect-NSXT -confirm:$false
     } # End of Foreach $NsxManager
     #endregion Script Body
 } # End Invoke-AsBuiltReport.VMware.NSX-T function
