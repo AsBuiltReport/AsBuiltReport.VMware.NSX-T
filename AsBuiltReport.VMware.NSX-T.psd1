@@ -55,6 +55,10 @@
         @{
             ModuleName    = 'AsBuiltReport.Core';
             ModuleVersion = '1.1.0'
+        },
+        @{
+            ModuleName    = 'psNSXT';
+            ModuleVersion = '0.2.1'
         }
     )
 
