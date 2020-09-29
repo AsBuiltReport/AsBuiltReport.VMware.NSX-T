@@ -32,12 +32,28 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
     #---------------------------------------------------------------------------------------------#
     # Connect to NSX-T Manager using supplied credentials
     foreach ($NsxManager in $Target) {
-        Connect-NSXT $nsxManager -credential $Credential -SkipCertificate
+        $NSXTConnect = Connect-NSXT $nsxManager -credential $Credential -SkipCertificate
 
-        $node = Invoke-NSXTRestMethod "api/v1/node"
+        $NSXTnode = Invoke-NSXTRestMethod "api/v1/node"
+        $NSXTipset = Invoke-NSXTRestMethod "api/v1/ip-sets"
+        $NSXTSegment = Get-NSXTPolicyInfraSegments
+        $NSXTTz = Get-NSXTTransportZones
 
-        Section -Style Heading2 'Node (NSX-T Manger) Information' {
-            $node | Table
+        Section -Style Heading2 'NSX-T' {
+            Paragraph 'The following section provides a summary of the VMware NSX-T configuration.'
+            BlankLine
+            #Provide a summary of the NSX-T Environment
+            $NSXTSummary = [PSCustomObject] @{
+                'NSX-T Manager Address' = $NSXTConnect.Server
+                'NSX-T Manager Hostname' = $NSXTnode.hostname
+                'NSX-T Manager Node Version' = $NSXTnode.node_version
+                'NSX-T Manager Product Version' = $NSXTnode.product_version
+                'NSX-T Manager Kernel Version' = $NSXTnode.kernel_version
+                'NSX-T Segment ID Count' = $NSXTSegment.count
+                'NSX-T Transport Zone Count' = $NSXTTz.count
+                'NSX-T IP Set Count' = $NSXTipset.count
+                }
+            $NSXTSummary | Table -Name 'NSX-T Information' -List
         }
         Disconnect-NSXT -confirm:$false
     } # End of Foreach $NsxManager
