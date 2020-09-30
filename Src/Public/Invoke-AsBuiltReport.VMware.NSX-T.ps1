@@ -32,7 +32,12 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
     #---------------------------------------------------------------------------------------------#
     # Connect to NSX-T Manager using supplied credentials
     foreach ($NsxManager in $Target) {
-        Connect-NsxtServer -Server $nsxManager -port 4443 -credential $Credential -Verbose
+        try {
+            Write-PScriboMessage "Connecting to NSX-T Manager '$NsxManager'."
+            Connect-NsxtServer -Server $nsxManager -Credential $Credential -ErrorAction Stop
+        } catch {
+            Write-Error $_
+        }
 
         Section -Style Heading2 'Compute Managers' {
             Paragraph 'The following section provides a summary of the configured Compute Managers.'
@@ -64,17 +69,20 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
             Get-NSXTController  | Table -Name 'NSX-T Controllers' -List
         }
 
-        Section -Style Heading2 'NSX-T Edge Clusters' {
-            Paragraph 'The following section provides a summary of the configured Compute Managers.'
-            BlankLine
-            Get-NSXTEdgeCluster  | Table -Name 'NSX-T Edge Clusters' -List
+        $EdgeClusters = Get-NSXTEdgeCluster
+        if ($EdgeClusters) {
+            Section -Style Heading2 'NSX-T Edge Clusters' {
+                BlankLine
+                $EdgeClusters  | Table -Name 'NSX-T Edge Clusters' -List
+            }
         }
 
-        Section -Style Heading2 'NSX-T Fabric Nodes' {
-            Paragraph 'The following section provides a summary of the configured Compute Managers.'
-            BlankLine
-            Get-NSXTFabricNode  | Table -Name 'NSX-T Fabric Nodes' -List
-        }
+        # Causes error - Unable to get field 'resource_type', no field of that name found
+        # Section -Style Heading2 'NSX-T Fabric Nodes' {
+        #     Paragraph 'The following section provides a summary of the configured Compute Managers.'
+        #     BlankLine
+        #     Get-NSXTFabricNode  | Table -Name 'NSX-T Fabric Nodes' -List
+        # }
 
         Section -Style Heading2 'NSX-T Fabric VMs' {
             Paragraph 'The following section provides a summary of the configured Compute Managers.'
@@ -94,10 +102,13 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
         #     Get-NSXTForwardingTable  | Table -Name 'NSX-T Forwarding Table' -List
         # }
 
-        Section -Style Heading2 'NSX-T IPAM Block' {
-            Paragraph 'The following section provides a summary of the configured Compute Managers.'
-            BlankLine
-            Get-NSXTIPAMIPBlock  | Table -Name 'NSX-T IPAM Block' -List
+        $IPAMBlock = Get-NSXTIPAMIPBlock 
+        if ($IPAMBlock) {
+            Section -Style Heading2 'NSX-T IPAM Block' {
+                Paragraph 'The following section provides a summary of the configured Compute Managers.'
+                BlankLine
+                $IPAMBlock | Table -Name 'NSX-T IPAM Block' -List
+            }
         }
 
         Section -Style Heading2 'NSX-T IP Pool' {
@@ -106,10 +117,13 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
             Get-NSXTIPPool  | Table -Name 'NSX-T IP Pool' -List
         }
 
-        Section -Style Heading2 'NSX-T Logical Routers' {
-            Paragraph 'The following section provides a summary of the configured Compute Managers.'
-            BlankLine
-            Get-NSXTLogicalRouter  | Table -Name 'NSX-T Logical Routers' -List
+        $LR = Get-NSXTLogicalRouter
+        if ($LR) {
+            Section -Style Heading2 'NSX-T Logical Routers' {
+                Paragraph 'The following section provides a summary of the configured Compute Managers.'
+                BlankLine
+                $LR | Table -Name 'NSX-T Logical Routers' -List
+            }
         }
         
         Section -Style Heading2 'NSX-T ' {
