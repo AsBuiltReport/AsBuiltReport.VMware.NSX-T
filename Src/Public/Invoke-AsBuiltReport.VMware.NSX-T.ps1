@@ -36,150 +36,203 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
             Write-PScriboMessage "Connecting to NSX-T Manager '$NsxManager'."
             Connect-NsxtServer -Server $nsxManager -Credential $Credential -ErrorAction Stop
         } catch {
+            Write-Error "Unable to connect to NSX-T Manager '$NsxManager'"
             Write-Error $_
+            Continue
         }
 
-        Section -Style Heading2 'Compute Managers' {
-            Paragraph 'The following section provides a summary of the configured Compute Managers.'
-            BlankLine
-            Get-NSXTComputeManager | Table -Name 'Compute Managers' -List
-        }
+        # Report index:
+        #System
+        #    NSX-T Manager
+        #    Controllers
+        #    Compute Managers
+        #    Edge Clusters
+        #    Edge Nodes
+        #    Transport Nodes
+        #    Transport Zones
+        #Networking
+        #    Logical switches
+        #    Gateway/Routers
+        #    Segments # TODO
+        #    Routing
+        #Security
+        #    EW firewall
+        #    Gateway firewall (NS) # TODO
+        #    Extras (URL, IDS, Introspection) # TODO
+        #Inventory
+        #    Services (NAT, LB, VPN, DHCP, DNS) # TODO
+        #    IP address Pools
 
-        Section -Style Heading2 'NSX-T Controllers' {
-            Paragraph 'The following section provides a summary of the configured Compute Managers.'
-            BlankLine
-            Get-NSXTController  | Table -Name 'NSX-T Controllers' -List
-        }
+
+        Section -Style Heading1 'NSX-T System' {
+
+            try {
+                Section -Style Heading2 'NSX-T Manager Details' {
+                    Paragraph 'The following section provides a summary of the Manager Details.'
+                    BlankLine
+                    Get-NSXTManager | Table -Name 'NSX-T Manager Details' -List
+                }
+            } catch {
+                Write-Error $_
+            }
+
+            try {
+                Section -Style Heading2 'NSX-T Controllers' {
+                    Paragraph 'The following section provides a summary of the configured Compute Managers.'
+                    BlankLine
+                    Get-NSXTController  | Table -Name 'NSX-T Controllers' -List
+                }
+            } catch {
+                Write-Error $_
+            }
+
+            try {
+                Section -Style Heading2 'NSX-T Compute Managers' {
+                    Paragraph 'The following section provides a summary of the configured Compute Managers.'
+                    BlankLine
+                    Get-NSXTComputeManager | Table -Name 'Compute Managers' -List
+                }
+            } catch {
+                Write-Error $_
+            }
+
+            try {
+                $EdgeClusters = Get-NSXTEdgeCluster
+                if ($EdgeClusters) {
+                    Section -Style Heading2 'NSX-T Edge Clusters' {
+                        BlankLine
+                        $EdgeClusters  | Table -Name 'NSX-T Edge Clusters' -List
+                    }
+                }
+            } catch {
+                Write-Error $_
+            }
+
+
+            try {
+                Section -Style Heading2 'NSX-T Edge Nodes' {
+                    Paragraph 'The following section provides a summary of the configured Edge Nodes.'
+                    BlankLine
+                    Get-NSXTFabricNode -Edge | Table -Name 'NSX-T Edge Nodes' -List
+                }
+            } catch {
+                Write-Error $_
+            }
+
+
+            try {
+                Section -Style Heading2 'NSX-T Transport Nodes' {
+                    Paragraph 'The following section provides a summary of the configured Transport Nodes.'
+                    BlankLine
+                    Get-NSXTTransportNode | Table -Name 'NSX-T Transport Nodes' -List
+                }
+            } catch {
+                Write-Error $_
+            }
+
+            try {
+                Section -Style Heading2 'NSX-T Transport Zones' {
+                    Paragraph 'The following section provides a summary of the configured Transport Zones.'
+                    BlankLine
+                    Get-NSXTTransportZone  | Table -Name 'NSX-T Transport Zones' -List
+                }
+            } catch {
+                Write-Error $_
+            }
+
+        } # end Section -Style Heading1 'NSX-T System' {
+
+
+        Section -Style Heading1 'NSX-T Networking' {
+            try {
+                Section -Style Heading2 'NSX-T Logical Switches' {
+                    Paragraph 'The following section provides a summary of the configured Logical Switches.'
+                    BlankLine
+                    Get-NSXTLogicalSwitch  | Table -Name 'NSX-T Logical Switches' -List
+                }
+            } catch {
+                Write-Error $_
+            }
+
+            try {
+                $LR = Get-NSXTLogicalRouter
+                if ($LR) {
+                    Section -Style Heading2 'NSX-T Logical Routers' {
+                        Paragraph 'The following section provides a summary of the configured Compute Managers.'
+                        BlankLine
+                        $LR | Table -Name 'NSX-T Logical Routers' -List
+                    }
+                }
+            } catch {
+                Write-Error $_
+            }
+
+            try {
+                Section -Style Heading2 'NSX-T Network Routes' {
+                    Paragraph 'The following section provides a summary of the configured Network Routes.'
+                    BlankLine
+                    Get-NSXTNetworkRoutes  | Table -Name 'NSX-T Network Routes' -List
+                }
+            } catch {
+                Write-Error $_
+            }
+
+        } # end Section -Style Heading1 'NSX-T Networking' {
+
+        Section -Style Heading1 'NSX-T Security' {
+
+            try {
+                Section -Style Heading2 'NSX-T Distributed Firewall Rules' {
+                    Paragraph 'The following section provides a summary of the configured Compute Managers.'
+                    BlankLine
+                    Get-NSXTFirewallRule  | Table -Name 'NSX-T Distributed Firewall Rules' -List
+                }
+            } catch {
+                Write-Error $_
+            }
+
+
+        } # end Section -Style Heading1 'NSX-T Security' {
+
+        Section -Style Heading1 'NSX-T Inventory' {
+
+            try {
+                $IPAMBlock = Get-NSXTIPAMIPBlock
+                if ($IPAMBlock) {
+                    Section -Style Heading2 'NSX-T IPAM Block' {
+                        Paragraph 'The following section provides a summary of the configured Compute Managers.'
+                        BlankLine
+                        $IPAMBlock | Table -Name 'NSX-T IPAM Block' -List
+                    }
+                }
+            } catch {
+                Write-Error $_
+            }
+
+            try {
+                Section -Style Heading2 'NSX-T IP Pool' {
+                    Paragraph 'The following section provides a summary of the configured Compute Managers.'
+                    BlankLine
+                    Get-NSXTIPPool  | Table -Name 'NSX-T IP Pool' -List
+                }
+            } catch {
+                Write-Error $_
+            }
+
+
+        } # end Section -Style Heading1 'NSX-T Inventory' {
+
+
+
 
         # Section -Style Heading2 'BGP Neighbours' {
         #     Paragraph 'The following section provides a summary of the configured Compute Managers.'
         #     BlankLine
         #     Get-NSXTBGPNeighbors  | Table -Name 'BGP Neighbours' -List
         # }
-        
-        Section -Style Heading2 'Cluster Mode' {
-            Paragraph 'The following section provides a summary of the configured Compute Managers.'
-            BlankLine
-            Get-NSXTClusterNode  | Table -Name 'Cluster Mode' -List
-        }
 
-        Section -Style Heading2 'NSX-T Controllers' {
-            Paragraph 'The following section provides a summary of the configured Compute Managers.'
-            BlankLine
-            Get-NSXTController  | Table -Name 'NSX-T Controllers' -List
-        }
 
-        $EdgeClusters = Get-NSXTEdgeCluster
-        if ($EdgeClusters) {
-            Section -Style Heading2 'NSX-T Edge Clusters' {
-                BlankLine
-                $EdgeClusters  | Table -Name 'NSX-T Edge Clusters' -List
-            }
-        }
 
-        # Causes error - Unable to get field 'resource_type', no field of that name found
-        # Section -Style Heading2 'NSX-T Fabric Nodes' {
-        #     Paragraph 'The following section provides a summary of the configured Compute Managers.'
-        #     BlankLine
-        #     Get-NSXTFabricNode  | Table -Name 'NSX-T Fabric Nodes' -List
-        # }
-
-        Section -Style Heading2 'NSX-T Fabric VMs' {
-            Paragraph 'The following section provides a summary of the configured Compute Managers.'
-            BlankLine
-            Get-NSXTFabricVM  | Table -Name 'NSX-T Fabric VMs' -List
-        }
-
-        Section -Style Heading2 'NSX-T Distributed Firewall Rules' {
-            Paragraph 'The following section provides a summary of the configured Compute Managers.'
-            BlankLine
-            Get-NSXTFirewallRule  | Table -Name 'NSX-T Distributed Firewall Rules' -List
-        }
-
-        # Section -Style Heading2 'NSX-T Forwarding Table' {
-        #     Paragraph 'The following section provides a summary of the configured Compute Managers.'
-        #     BlankLine
-        #     Get-NSXTForwardingTable  | Table -Name 'NSX-T Forwarding Table' -List
-        # }
-
-        $IPAMBlock = Get-NSXTIPAMIPBlock 
-        if ($IPAMBlock) {
-            Section -Style Heading2 'NSX-T IPAM Block' {
-                Paragraph 'The following section provides a summary of the configured Compute Managers.'
-                BlankLine
-                $IPAMBlock | Table -Name 'NSX-T IPAM Block' -List
-            }
-        }
-
-        Section -Style Heading2 'NSX-T IP Pool' {
-            Paragraph 'The following section provides a summary of the configured Compute Managers.'
-            BlankLine
-            Get-NSXTIPPool  | Table -Name 'NSX-T IP Pool' -List
-        }
-
-        $LR = Get-NSXTLogicalRouter
-        if ($LR) {
-            Section -Style Heading2 'NSX-T Logical Routers' {
-                Paragraph 'The following section provides a summary of the configured Compute Managers.'
-                BlankLine
-                $LR | Table -Name 'NSX-T Logical Routers' -List
-            }
-        }
-        
-        Section -Style Heading2 'NSX-T ' {
-            Paragraph 'The following section provides a summary of the configured Compute Managers.'
-            BlankLine
-            Get-NSXTLogicalRouterPorts  | Table -Name 'NSX-T ' -List
-        }
-
-        Section -Style Heading2 'NSX-T ' {
-            Paragraph 'The following section provides a summary of the configured Compute Managers.'
-            BlankLine
-            Get-NSXTLogicalSwitch  | Table -Name 'NSX-T ' -List
-        }
-
-        Section -Style Heading2 'NSX-T ' {
-            Paragraph 'The following section provides a summary of the configured Compute Managers.'
-            BlankLine
-            Get-NSXTManager | Table -Name 'NSX-T ' -List
-        }
-
-        Section -Style Heading2 'NSX-T ' {
-            Paragraph 'The following section provides a summary of the configured Compute Managers.'
-            BlankLine
-            Get-NSXTNetworkRoutes  | Table -Name 'NSX-T ' -List
-        }
-
-        Section -Style Heading2 'NSX-T ' {
-            Paragraph 'The following section provides a summary of the configured Compute Managers.'
-            BlankLine
-            Get-NSXTTraceFlow  | Table -Name 'NSX-T ' -List
-        }
-
-        Section -Style Heading2 'NSX-T ' {
-            Paragraph 'The following section provides a summary of the configured Compute Managers.'
-            BlankLine
-            Get-NSXTTransportNode | Table -Name 'NSX-T ' -List
-        }
-
-        Section -Style Heading2 'NSX-T ' {
-            Paragraph 'The following section provides a summary of the configured Compute Managers.'
-            BlankLine
-            Get-NSXTTransportZone  | Table -Name 'NSX-T ' -List
-        }
-        <#      
-        Section -Style Heading2 'NSX-T ' {
-            Paragraph 'The following section provides a summary of the configured Compute Managers.'
-            BlankLine
-              | Table -Name 'NSX-T ' -List
-        }
-        
-        #Get-NSXTRoutingTable
-        
-        #Get-NSXTTraceFlowObservations
-        
-        
-        #>
 
         Disconnect-NsxtServer -Confirm:$false
     } # End of Foreach $NsxManager
