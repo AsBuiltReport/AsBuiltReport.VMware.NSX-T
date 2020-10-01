@@ -107,16 +107,6 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
         # }
 
         try {
-            Section -Style Heading2 'NSX-T Fabric VMs' {
-                Paragraph 'The following section provides a summary of the configured Compute Managers.'
-                BlankLine
-                Get-NSXTFabricVM  | Table -Name 'NSX-T Fabric VMs' -List
-            }
-        } catch {
-            Write-Error $_
-        }
-
-        try {
             Section -Style Heading2 'NSX-T Distributed Firewall Rules' {
                 Paragraph 'The following section provides a summary of the configured Compute Managers.'
                 BlankLine
@@ -163,16 +153,6 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
                     BlankLine
                     $LR | Table -Name 'NSX-T Logical Routers' -List
                 }
-            }
-        } catch {
-            Write-Error $_
-        }
-
-        try {
-            Section -Style Heading2 'NSX-T Logical Router Ports' {
-                Paragraph 'The following section provides a summary of the configured Logical Router Ports.'
-                BlankLine
-                Get-NSXTLogicalRouterPorts  | Table -Name 'NSX-T Logical Router Ports' -List
             }
         } catch {
             Write-Error $_
