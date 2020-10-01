@@ -33,8 +33,9 @@
                         'Set-NSXTTraceFlow',
                         'Get-NSXTIPAMIPBlock',
                         'Set-NSXTIPAMIPBlock',
-                        'Remove-NSXTIPAMIPBlock'
-                        
+                        'Remove-NSXTIPAMIPBlock',
+                        'Get-NSXTNATRule'
+
 
 	PrivateData = @{
 		PSData = @{

@@ -10,7 +10,7 @@
     } else {
         $nodes = $clusterNodeService.list().results | where { $_.manager_role -eq $null }
     }
-    
+
     $results = @()
     foreach ($node in $nodes) {
         $nodeId = $node.id
@@ -64,7 +64,7 @@ Function Get-NSXTFabricNode {
             Version = $node.os_version;
             Status = $nodeStatusResult.host_node_deployment_status
             ManagerStatus = $nodeStatusResult.mpa_connectivity_status
-            ControllerStatus = $nodeStatusResult.lcp_connectivity_status           
+            ControllerStatus = $nodeStatusResult.lcp_connectivity_status
         }
         $results+=$tmp
     }
@@ -177,13 +177,13 @@ Function Get-NSXTTransportNode {
     .Synopsis
        Retrieves the transport_node information
     .DESCRIPTION
-       Retrieves transport_node information for a single or multiple IDs. Execute with no parameters to get all ports, specify a transport_node if known. 
+       Retrieves transport_node information for a single or multiple IDs. Execute with no parameters to get all ports, specify a transport_node if known.
     .EXAMPLE
        Get-NSXTTransportNode
     .EXAMPLE
        Get-NSXTThingTemplate -Tranport_node_id "TN ID"
-#>  
- 
+#>
+
     Param (
         [parameter(Mandatory=$false,ValueFromPipelineByPropertyName=$true)]
         [Alias("Id","Tranportnode_id")]
@@ -214,7 +214,7 @@ Function Get-NSXTTransportNode {
         }
 
         foreach ($NSXTransportNode in $NSXTransportNodes) {
-                
+
             $results = [NSXTransportNode]::new()
             $results.Name = $NSXTransportNode.display_name;
             $results.Transport_node_id = $NSXTransportNode.Id;
@@ -225,7 +225,7 @@ Function Get-NSXTTransportNode {
             $results.transport_zone_endpoints = $NSXTransportNode.transport_zone_endpoints;
             $results.host_switches = $NSXTransportNode.host_switches
             $results
-        } 
+        }
     }
 }
 
@@ -239,8 +239,8 @@ Function Get-NSXTTraceFlow {
        Get-NSXTTraceFlow
     .EXAMPLE
        Get-NSXTTraceFlow -traceflow_id "TF ID
-#>  
- 
+#>
+
     Param (
         [parameter(Mandatory=$false,ValueFromPipeline=$true)]
         [Alias("Id")]
@@ -248,7 +248,7 @@ Function Get-NSXTTraceFlow {
     )
 
     $NSXTraceFlowsService = Get-NsxtService -Name "com.vmware.nsx.traceflows"
-        
+
     if($traceflow_id) {
         $NSXTraceFlows = $NSXTraceFlowsService.get($traceflow_id)
     } else {
@@ -267,7 +267,7 @@ Function Get-NSXTTraceFlow {
     }
 
     foreach ($NSXTraceFlow in $NSXTraceFlows) {
-                
+
         $results = [NSXTraceFlow]::new()
         $results.traceflow_id = $NSXTraceFlow.Id;
         $results.Operation_State = $NSXTraceFlow.operation_state;
@@ -277,7 +277,7 @@ Function Get-NSXTTraceFlow {
         $results.dropped = $NSXTraceFlow.Counters.dropped_count;
         $results.analysis = $NSXTraceFlow.analysis
          $results
-    } 
+    }
 }
 
 Function Get-NSXTTraceFlowObservations {
@@ -290,8 +290,8 @@ Function Get-NSXTTraceFlowObservations {
         Get-NSXTTraceFlowObservations -traceflow_id "TF ID"
     .EXAMPLE
        Get-NSXTTraceFlow | Get-NSXTTraceFlowObservations
-#>  
- 
+#>
+
     Param (
         [parameter(Mandatory=$true,ValueFromPipelineByPropertyName=$true)]
         [Alias("Id")]
@@ -302,9 +302,9 @@ Function Get-NSXTTraceFlowObservations {
     {
         $NSXTraceFlowsObservService = Get-NsxtService -Name "com.vmware.nsx.traceflows.observations"
     }
-     
+
     Process
-    {    
+    {
         if($traceflow_id) {
             $NSXTraceFlowsObserv = $NSXTraceFlowsObservService.list($traceflow_id)
         } else {
@@ -327,7 +327,7 @@ Function Get-NSXTEdgeCluster {
        Get-NSXTEdgeCluster -edge_cluster_id "Edge Cluster ID"
     .EXAMPLE
        Get-NSXTThingTemplate | where name -eq "My Edge Cluster Name"
-#>  
+#>
 
     Param (
         [parameter(Mandatory=$false,ValueFromPipelineByPropertyName=$true)]
@@ -360,7 +360,7 @@ Function Get-NSXTEdgeCluster {
         else {
             $NSXEdgeClusters = $NSXTEdgeClustersService.list().results
         }
-        
+
         foreach ($NSXEdgeCluster in $NSXEdgeClusters) {
 
             $results = [NSXEdgeCluster]::new()
@@ -392,7 +392,7 @@ Function Get-NSXTLogicalRouter {
        Get-NSXTLogicalRouter | where name -eq "LR Name"
     .EXAMPLE
        (Get-NSXTLogicalRouter -Logical_router_id "LR ID").per_node_status
-#>  
+#>
 
     Param (
         [parameter(Mandatory=$false,ValueFromPipelineByPropertyName=$true)]
@@ -404,17 +404,17 @@ Function Get-NSXTLogicalRouter {
     {
         $NSXTLogicalRoutersService = Get-NsxtService -Name "com.vmware.nsx.logical_routers"
         $NSXTLogicalRoutersStatusService = Get-NsxtService -Name "com.vmware.nsx.logical_routers.status"
-        
+
         class per_node_status {
-            $service_router_id 
+            $service_router_id
             [ValidateSet("ACTIVE","STANDBY","DOWN","SYNC","UNKNOWN")]
-            $high_availability_status 
+            $high_availability_status
             $transport_node_id
 
             per_node_status(){}
 
             per_node_status(
-                $service_router_id, 
+                $service_router_id,
                 $high_availability_status,
                 $transport_node_id
             ) {
@@ -423,7 +423,7 @@ Function Get-NSXTLogicalRouter {
                 $this.transport_node_id = $transport_node_id
             }
         }
-        
+
         class NSXTLogicalRouter {
             [string]$Name
             [string]$Logical_router_id
@@ -453,10 +453,10 @@ Function Get-NSXTLogicalRouter {
         }
 
         foreach ($NSXLogicalRouter in $NSXLogicalRouters) {
-            
+
             $NSXTLogicalRoutersStatus = $NSXTLogicalRoutersStatusService.get($NSXLogicalRouter.id)
             $results = [NSXTLogicalRouter]::new()
-            
+
             foreach ($NSXTLogicalRouterStatus in $NSXTLogicalRoutersStatus.per_node_status) {
                 $results.per_node_status += [per_node_status]::new($NSXTLogicalRouterStatus.service_router_id,$NSXTLogicalRouterStatus.high_availability_status,$NSXTLogicalRouterStatus.transport_node_id)
             }
@@ -474,9 +474,77 @@ Function Get-NSXTLogicalRouter {
             $results.advanced_config =$NSXLogicalRouter.advanced_config;
             $results.firewall_sections =$NSXLogicalRouter.firewall_sections
              $results
-        }  
+        }
     }
 }
+
+
+Function Get-NSXTNATRule {
+    <#
+      .Synopsis
+         Retrieves the NAT rules information
+      .DESCRIPTION
+         Retrieves NAT rules for a single LR. Must specify Logical_router_id. Pipeline input supported.
+      .EXAMPLE
+         Get-NSXTNATRule -Logical_router_id "LR ID" | format-table -autosize
+  #>
+
+    Param (
+        [parameter(Mandatory=$true,ValueFromPipelineByPropertyName=$true)]
+        [string]$Logical_router_id
+    )
+
+    Begin
+    {
+        $NSXTNATService = Get-NsxtService -Name "com.vmware.nsx.logical_routers.nat.rules"
+
+        class NSXTNATRule {
+            hidden [string]$Logical_router_id
+            [long]$rule_id
+            [long]$rule_priority
+            [string]$action
+            [string]$match_source_network
+            [string]$translated_network
+            [bool]$enabled
+            [bool]$logging
+            [string]$description
+            [string]$match_destination_network
+            [string]$match_service
+            [string]$translated_ports
+            [string]$protection
+            hidden [string]$internal_rule_id
+        }
+    }
+
+    Process
+    {
+        $NSXTNatRules = $NSXTNATService.list($Logical_router_id)
+
+        foreach ($NSXTNATRule in $NSXTNatRules.results)
+        {
+
+              $results = [NSXTNATRule]::new()
+              $results.Logical_router_id = $Logical_router_id;
+
+              $results.rule_id = $NSXTNATRule.id;
+              $results.rule_priority = $NSXTNATRule.rule_priority;
+              $results.action = $NSXTNATRule.action;
+              $results.match_source_network = $NSXTNATRule.match_source_network;
+              $results.translated_network = $NSXTNATRule.translated_network;
+              $results.enabled = $NSXTNATRule.enabled;
+              $results.logging = $NSXTNATRule.logging;
+              $results.description = $NSXTNATRule.description;
+              $results.match_destination_network = $NSXTNATRule.match_destination_network;
+              $results.match_service = $NSXTNATRule.match_service;
+              $results.translated_ports = $NSXTNATRule.translated_ports;
+              $results.protection = $NSXTNATRule.protection;
+              $results.internal_rule_id = $NSXTNATRule.internal_rule_id;
+              $results
+          }
+      }
+  }
+
+
 
 Function Get-NSXTRoutingTable {
   <#
@@ -492,8 +560,8 @@ Function Get-NSXTRoutingTable {
        Get-NSXTLogicalRouter | where name -eq INT-T1 | Get-NSXTRoutingTable -transport_node_id ((Get-NSXTTransportNode | where name -match "INT")[0].transport_node_id)
     .EXAMPLE
        Get-NSXTLogicalRouter | where name -eq INT-T1 | Get-NSXTRoutingTable -transport_node_id (((Get-NSXTLogicalRouter | where name -eq INT-T1).per_node_status | where high_availability_status -eq ACTIVE).transport_node_id)
-#>  
- 
+#>
+
     Param (
         [parameter(Mandatory=$true,ValueFromPipelineByPropertyName=$true)]
         [string]$Logical_router_id,
@@ -515,14 +583,14 @@ Function Get-NSXTRoutingTable {
             hidden [string]$logical_router_port_id
             [long]$admin_distance
     }
-    }    
-    
+    }
+
     Process
     {
         $NSXTRoutingTable = $NSXTRoutingTableService.list($Logical_router_id,$transport_node_id,$null,$null,$null,$null,$null,'realtime')
-        
+
         foreach ($NSXTRoute in $NSXTRoutingTable.results) {
-            
+
             $results = [NSXTRoutingTable]::new()
             $results.Logical_router_id = $Logical_router_id;
             $results.lr_component_type = $NSXTRoute.lr_component_type;
@@ -545,7 +613,7 @@ Function Get-NSXTFabricVM {
        Retrieves all VM's attached to the fabric.
     .EXAMPLE
        Get-NSXTFabricVM
-#>  
+#>
     Begin
     {
         $NSXTVMService = Get-NsxtService -Name "com.vmware.nsx.fabric.virtual_machines"
@@ -567,7 +635,7 @@ Function Get-NSXTFabricVM {
     {
 
         $NSXTVMs = $NSXTVMService.list().results
-                
+
         foreach ($NSXTVM in $NSXTVMs) {
 
             $results = [NSXVM]::new()
@@ -595,9 +663,9 @@ Function Get-NSXTBGPNeighbors {
     .EXAMPLE
        Get-NSXTBGPNeighbors -logical_router_id "LR ID"
     .EXAMPLE
-       Get-NSXTLogicalRouter | where name -eq "LR Name" | Get-NSXTBGPNeighbors       
-#>  
- 
+       Get-NSXTLogicalRouter | where name -eq "LR Name" | Get-NSXTBGPNeighbors
+#>
+
     Param (
         [parameter(Mandatory=$true,ValueFromPipelineByPropertyName=$true)]
         [Alias("Id")]
@@ -639,7 +707,7 @@ Function Get-NSXTBGPNeighbors {
         $NSXTThings = $NSXTThingsService.list($logical_router_id).results
 
         foreach ($NSXTThing in $NSXTThings) {
-            
+
             $results = [NSXTBGPNeighbors]::new()
             $results.Name = $NSXTThing.display_name;
             $results.logical_router_id = $NSXTThing.logical_router_id;
@@ -664,7 +732,7 @@ Function Get-NSXTBGPNeighbors {
             $results.source_address = $NSXTThing.source_address;
             $results.source_addresses = $NSXTThing.source_addresses
              $results
-        }  
+        }
     }
 }
 
@@ -682,7 +750,7 @@ Function Get-NSXTForwardingTable {
        Get-NSXTLogicalRouter | where name -eq "LR Name" | Get-NSXTForwardingTable -transport_node_id ((Get-NSXTTransportNode | where name -match "Edge Name")[0].transport_node_id)
     .EXAMPLE
        Get-NSXTLogicalRouter | where name -eq "LR Name" | Get-NSXTForwardingTable -transport_node_id (((Get-NSXTLogicalRouter | where name -eq "Edge Name").per_node_status | where high_availability_status -eq ACTIVE).transport_node_id)
-#>  
+#>
 
     Param (
         [parameter(Mandatory=$true,ValueFromPipelineByPropertyName=$true)]
@@ -704,14 +772,14 @@ Function Get-NSXTForwardingTable {
                 [string]$route_type
                 hidden [string]$logical_router_port_id
         }
-    }    
-    
+    }
+
     Process
     {
         $NSXTForwardingTable = $NSXTForwardingTableService.list($Logical_router_id,$transport_node_id,$null,$null,$null,$null,$null,$null,'realtime')
-        
+
         foreach ($NSXTForwarding in $NSXTForwardingTable.results) {
-            
+
             $results = [NSXTForwardingTable]::new()
             $results.Logical_router_id = $Logical_router_id;
             $results.lr_component_type = $NSXTForwarding.lr_component_type;
@@ -730,12 +798,12 @@ Function Get-NSXTNetworkRoutes {
     .Synopsis
        Retrieves the network routes information
     .DESCRIPTION
-       Retrieves the network routes information for a single or multiple routes. 
+       Retrieves the network routes information for a single or multiple routes.
     .EXAMPLE
        Get-NSXTNetworkRoutes
     .EXAMPLE
        Get-NSXTNetworkRoutes -route_id "Route ID"
-#>  
+#>
 
     Param (
         [parameter(Mandatory=$false,ValueFromPipelineByPropertyName=$true)]
@@ -759,8 +827,8 @@ Function Get-NSXTNetworkRoutes {
             $scope
             $src
     }
-    }    
-    
+    }
+
     Process
     {
         if ($route_id) {
@@ -769,9 +837,9 @@ Function Get-NSXTNetworkRoutes {
         else {
             $NSXTNetworkRoutes = $NSXTNetworkRoutesService.list().results
         }
-              
+
         foreach ($NSXTRoute in $NSXTNetworkRoutes) {
-            
+
             $results = [NSXTNetworkRoutes]::new()
             $results.route_id = $NSXTRoute.route_id;
             $results.route_type = $NSXTRoute.route_type;
@@ -803,8 +871,8 @@ Function Get-NSXTLogicalRouterPorts {
        Get-NSXTLogicalRouterPorts -logical_router_id "LR Name"
     .EXAMPLE
        Get-NSXTLogicalRouterPorts -logical_router_id (Get-NSXTLogicalRouter | where name -eq "LR Name")
-#>    
-    
+#>
+
     Param (
         [parameter(Mandatory=$false,ValueFromPipelineByPropertyName=$true)]
         [Alias("Id")]
@@ -831,7 +899,7 @@ Function Get-NSXTLogicalRouterPorts {
                 $this.prefix_length = $prefix_length
             }
         }
-        
+
         class NSXTLogicalRouterPorts {
             [string]$Name
             $Id
@@ -859,7 +927,7 @@ Function Get-NSXTLogicalRouterPorts {
         }
 
         foreach ($NSXTLogicalRouterPort in $NSXTLogicalRouterPorts) {
-            
+
             $results = [NSXTLogicalRouterPorts]::new()
 
             foreach ($subnet in $NSXTLogicalRouterPort.subnets) {
@@ -875,7 +943,7 @@ Function Get-NSXTLogicalRouterPorts {
             $results.mac_address = $NSXTLogicalRouterPort.mac_address
             $results.linked_logical_switch_port_id = $NSXTLogicalRouterPort.linked_logical_switch_port_id
             $results
-        }  
+        }
     }
 }
 
@@ -891,7 +959,7 @@ Function Get-NSXTTransportZone {
        Get-NSXTTransportZone -zone_id "Zone ID"
     .EXAMPLE
         Get-NSXTTransportZone -name "Zone1"
-#>    
+#>
 
     Param (
         [parameter(Mandatory=$false,ValueFromPipelineByPropertyName=$true)]
@@ -934,7 +1002,7 @@ Function Get-NSXTTransportZone {
         }
 
         foreach ($NSXTTransportZone in $NSXTTransportZones) {
-            
+
             $results = [NSXTTransportZone]::new()
             $results.Name = $NSXTTransportZone.display_name;
             $results.ID = $NSXTTransportZone.Id;
@@ -948,7 +1016,7 @@ Function Get-NSXTTransportZone {
             $results.protection = $NSXTTransportZone.protection;
             $results.uplink_teaming_policy_names = $NSXTTransportZone.uplink_teaming_policy_names
             $results
-        }  
+        }
     }
 }
 
@@ -964,7 +1032,7 @@ Function Get-NSXTLogicalSwitch {
        Get-NSXTLogicalSwitch -lswitch_id "switch id"
     .EXAMPLE
        Get-NSXTLogicalSwitch -name "switch name"
-#>    
+#>
 
     Param (
         [parameter(Mandatory=$false,ValueFromPipelineByPropertyName=$true)]
@@ -1013,7 +1081,7 @@ Function Get-NSXTLogicalSwitch {
         }
 
         foreach ($NSXTLogicalSwitch in $NSXTLogicalSwitches) {
-            
+
             $results = [NSXTLogicalSwitch]::new()
             $results.Name = $NSXTLogicalSwitch.display_name;
             $results.Id = $NSXTLogicalSwitch.Id;
@@ -1033,7 +1101,7 @@ Function Get-NSXTLogicalSwitch {
             $results.vlan = $NSXTLogicalSwitch.vlan;
             $results.vlan_trunk_spec = $NSXTLogicalSwitch.vlan_trunk_spec
             $results
-        }  
+        }
     }
 }
 
@@ -1047,7 +1115,7 @@ Function Get-NSXTIPPool {
        Get-NSXTIPPool
     .EXAMPLE
        Get-NSXTThingTemplate -pool_id "Pool ID"
-#>    
+#>
 
     Param (
         [parameter(Mandatory=$false,ValueFromPipelineByPropertyName=$true)]
@@ -1084,12 +1152,12 @@ Function Get-NSXTIPPool {
                 $NSXTIPPools = $NSXTIPPoolService.list().results | where {$_.display_name -eq $name}
             }
             else {
-                $NSXTIPPools = $NSXTIPPoolService.list().results 
+                $NSXTIPPools = $NSXTIPPoolService.list().results
             }
         }
 
         foreach ($NSXTIPPool in $NSXTIPPools) {
-            
+
             $results = [NSXTIPPool]::new()
             $results.Name = $NSXTIPPool.display_name;
             $results.ID = $NSXTIPPool.id;
@@ -1102,7 +1170,7 @@ Function Get-NSXTIPPool {
             $results.RangeStart = $NSXTIPPool.subnets.allocation_ranges.start;
             $results.RangeEnd = $NSXTIPPool.subnets.allocation_ranges.end
             $results
-        }  
+        }
     }
 }
 
@@ -1119,7 +1187,7 @@ Function Get-NSXTIPAMIPBlock {
     .EXAMPLE
        Get-NSXTIPAMIPBlock -name "Block Name"
 
-#>    
+#>
 
     Param (
         [parameter(Mandatory=$false,ValueFromPipelineByPropertyName=$true)]
@@ -1158,7 +1226,7 @@ Function Get-NSXTIPAMIPBlock {
         }
 
         foreach ($NSXTIPAMIPBlock in $NSXTIPAMIPBlocks) {
-            
+
             $results = [ip_block]::new()
             $results.Name = $NSXTIPAMIPBlock.display_name;
             $results.block_id = $NSXTIPAMIPBlock.id;
@@ -1168,7 +1236,7 @@ Function Get-NSXTIPAMIPBlock {
             $results.resource_type = $NSXTIPAMIPBlock.resource_type
 
             $results
-        }  
+        }
     }
 }
 
@@ -1184,7 +1252,7 @@ Function Get-NSXTClusterNode {
        Get-NSXTClusterNode -node_id "Node Id"
     .EXAMPLE
        Get-NSXTClusterNode -name "Name"
-#>    
+#>
 
     Param (
         [parameter(Mandatory=$false,ValueFromPipelineByPropertyName=$true)]
@@ -1226,7 +1294,7 @@ Function Get-NSXTClusterNode {
         }
 
         foreach ($NSXTClusterNode in $NSXTClusterNodes) {
-            
+
             $results = [NSXTClusterNode]::new()
             $results.Name = $NSXTClusterNode.display_name;
             $results.node_id = $NSXTClusterNode.Id;
@@ -1246,7 +1314,7 @@ Function Get-NSXTClusterNode {
             }
 
             $results
-        }  
+        }
     }
 }
 
@@ -1263,9 +1331,9 @@ Function Set-NSXTLogicalRouter {
        Set-NSXTLogicalRouter -display_name "Name" -high_availability_mode "ACTIVE_ACTIVE" -router_type "TIER0" -edge_cluster_id "Edge Cluster ID"
     .EXAMPLE
        Set-NSXTLogicalRouter -display_name "Name" -high_availability_mode "ACTIVE_STANDBY" -router_type "TIER1" -description "this is my new tier1 lr"
-#>  
+#>
 
-    [CmdletBinding(SupportsShouldProcess=$true, 
+    [CmdletBinding(SupportsShouldProcess=$true,
                   ConfirmImpact='Medium')]
 
     # Paramameter Set variants will be needed Multicast & Broadcast Traffic Types as well as VM & Logical Port Types
@@ -1275,20 +1343,20 @@ Function Set-NSXTLogicalRouter {
             [parameter(Mandatory=$false,
                         ParameterSetName='TIER1')]
             [string]$description,
-            
+
             [parameter(Mandatory=$true,
                         ParameterSetName='TIER0')]
             [parameter(Mandatory=$true,
                         ParameterSetName='TIER1')]
             [string]$display_name,
-            
+
             [parameter(Mandatory=$true,
                         ParameterSetName='TIER0')]
             [parameter(Mandatory=$true,
                         ParameterSetName='TIER1')]
-            [ValidateSet("ACTIVE_ACTIVE","ACTIVE_STANDBY")] 
+            [ValidateSet("ACTIVE_ACTIVE","ACTIVE_STANDBY")]
             [string]$high_availability_mode,
-            
+
             [parameter(Mandatory=$true,
                         ParameterSetName='TIER0')]
             [parameter(Mandatory=$true,
@@ -1315,7 +1383,7 @@ Function Set-NSXTLogicalRouter {
                 throw "Could not connect to an NSX-T Manager, please try again"
             }
         }
-        
+
         $NSXTLogicalRouterService = Get-NsxtService -Name "com.vmware.nsx.logical_routers"
     }
 
@@ -1340,13 +1408,13 @@ Function Set-NSXTLogicalRouter {
             if ($pscmdlet.ShouldProcess($logical_router_request.display_name, "Create logical router"))
             {
                 $NSXTLogicalRouter = $NSXTLogicalRouterService.create($logical_router_request)
-            } 
+            }
         }
 
         catch
         {
             throw $Error[0].Exception.ServerError.data
-            # more error data found in the NSX-T Manager /var/log/vmware/nsx-manager.log file.  
+            # more error data found in the NSX-T Manager /var/log/vmware/nsx-manager.log file.
         }
 
         $NSXTLogicalRouter
@@ -1363,22 +1431,22 @@ Function Set-NSXTLogicalSwitch {
        Set-NSXTLogicalSwitch -display_name "Name" -transport_zone_id "TP Zone ID"
     .EXAMPLE
        Set-NSXTLogicalSwitch -display_name "Name" -transport_zone_id "TP Zone ID" -admin_state "UP" -replication_mode "MTEP" -ip_pool_id "IP Pool Name"
-#>  
+#>
 
-    [CmdletBinding(SupportsShouldProcess=$true, 
+    [CmdletBinding(SupportsShouldProcess=$true,
                   ConfirmImpact='Medium')]
 
     # Paramameter Set variants will be needed Multicast & Broadcast Traffic Types as well as VM & Logical Port Types
     Param (
             [parameter(Mandatory=$false)]
             [string]$description,
-            
+
             [parameter(Mandatory=$true)]
             [string]$display_name,
-            
+
             [parameter(Mandatory=$true)]
             [string]$transport_zone_id,
-            
+
             [parameter(Mandatory=$true)]
             [ValidateSet("UP","DOWN")]
             [string]$admin_state,
@@ -1405,7 +1473,7 @@ Function Set-NSXTLogicalSwitch {
                 throw "Could not connect to an NSX-T Manager, please try again"
             }
         }
-        
+
         $NSXTLogicalSwitchService = Get-NsxtService -Name "com.vmware.nsx.logical_switches"
     }
 
@@ -1428,13 +1496,13 @@ Function Set-NSXTLogicalSwitch {
             {
                 $NSXTLogicalSwitch = $NSXTLogicalSwitchService.create($logical_switch_request)
             }
-            
+
         }
 
         catch
         {
             throw $Error[0].Exception.ServerError.data
-            # more error data found in the NSX-T Manager /var/log/vmware/nsx-manager.log file.  
+            # more error data found in the NSX-T Manager /var/log/vmware/nsx-manager.log file.
         }
 
         $NSXTLogicalSwitch
@@ -1446,23 +1514,23 @@ Function Set-NSXTIPAMIPBlock {
     .Synopsis
        Creates an IPAM IP Block
     .DESCRIPTION
-       Creates a IPAM IP Block with a cidr parameter.  
+       Creates a IPAM IP Block with a cidr parameter.
     .EXAMPLE
        Set-NSXTIPAMIPBlock -name "IPAM Block Name" -cidr "192.168.0.0/24"
-#>  
+#>
 
-    [CmdletBinding(SupportsShouldProcess=$true, 
+    [CmdletBinding(SupportsShouldProcess=$true,
                   ConfirmImpact='Medium')]
 
     # Paramameter Set variants will be needed Multicast & Broadcast Traffic Types as well as VM & Logical Port Types
     Param (
             [parameter(Mandatory=$false)]
             [string]$description,
-            
+
             [parameter(Mandatory=$true)]
             [ValidateNotNullOrEmpty()]
             [string]$display_name,
-            
+
             [parameter(Mandatory=$true)]
             [ValidateNotNullOrEmpty()]
             [string]$cidr
@@ -1482,7 +1550,7 @@ Function Set-NSXTIPAMIPBlock {
                 throw "Could not connect to an NSX-T Manager, please try again"
             }
         }
-        
+
         $NSXTIPAMIPBlockService = Get-NsxtService -Name "com.vmware.nsx.pools.ip_blocks"
     }
 
@@ -1500,7 +1568,7 @@ Function Set-NSXTIPAMIPBlock {
         {
             # Should process
             if ($pscmdlet.ShouldProcess($ip_pool.display_name, "Create IP Pool"))
-            {  
+            {
                 $NSXTIPAMIPBlock = $NSXTIPAMIPBlockService.create($IPAMIPBlock_request)
             }
         }
@@ -1508,7 +1576,7 @@ Function Set-NSXTIPAMIPBlock {
         catch
         {
             throw $Error[0].Exception.ServerError.data
-            # more error data found in the NSX-T Manager /var/log/vmware/nsx-manager.log file.  
+            # more error data found in the NSX-T Manager /var/log/vmware/nsx-manager.log file.
         }
 
         $NSXTIPAMIPBlock
@@ -1525,9 +1593,9 @@ Function Set-NSXTIPPool {
        Set-NSXTIPPool -display_name "Pool Name" -allocation_start "192.168.1.2" -allocation_end "192.168.1.100" -cidr "192.168.1.0/24"
     .EXAMPLE
        Set-NSXTIPPool -display_name "Test Pool Name" -allocation_start "192.168.1.2" -allocation_end "192.168.1.100" -cidr "192.168.1.0/24" -dns_nameservers "192.168.1.1" -gateway_ip "192.168.1.1" -dns_suffix "evil corp"
-#>  
+#>
 
-    [CmdletBinding(SupportsShouldProcess=$true, 
+    [CmdletBinding(SupportsShouldProcess=$true,
                   ConfirmImpact='High')]
 
     # Paramameter Set variants will be needed Multicast & Broadcast Traffic Types as well as VM & Logical Port Types
@@ -1535,13 +1603,13 @@ Function Set-NSXTIPPool {
             [parameter(Mandatory=$true)]
             [ValidateNotNullOrEmpty()]
             [string]$display_name,
-            
+
             [parameter(Mandatory=$false)]
             [string]$description,
-            
+
             [parameter(Mandatory=$false)]
             [string]$dns_nameservers,
-            
+
             [parameter(Mandatory=$false)]
             [string]$dns_suffix,
 
@@ -1575,9 +1643,9 @@ Function Set-NSXTIPPool {
                 throw "Could not connect to an NSX-T Manager, please try again"
             }
         }
-        
+
         $NSXTIPPoolService = Get-NsxtService -Name "com.vmware.nsx.pools.ip_pools"
-        
+
         # Classes unused - part of early testing
         class allocation_ranges {
             [string]$start
@@ -1591,7 +1659,7 @@ Function Set-NSXTIPPool {
             [string]$dns_suffix
             [string]$cidr
             [string]$gateway_ip
-            #hidden $self            
+            #hidden $self
         }
 
         class ip_pool {
@@ -1632,12 +1700,12 @@ Function Set-NSXTIPPool {
         $ip_pool.subnets[0].gateway_ip = $gateway_ip
         $ip_pool.revision = 0
         $ip_pool.tags = @()
-               
+
         try
         {
             # Should process
             if ($pscmdlet.ShouldProcess($ip_pool.display_name, "Create IP Pool"))
-            { 
+            {
                 $NSXTIPPoolService.create($ip_pool)
             }
         }
@@ -1657,14 +1725,14 @@ Function Remove-NSXTIPAMIPBlock {
     .Synopsis
        Removes an IPAM IP Block
     .DESCRIPTION
-       Removes a IPAM IP Block with a block_id parameter.  
+       Removes a IPAM IP Block with a block_id parameter.
     .EXAMPLE
        Remove-NSXTIPAMIPBlock -block_id "id"
     .EXAMPLE
         Get-NSXTIPAMIPBlock | where name -eq "IPAM Test2" | Remove-NSXTIPAMIPBlock
-#>  
+#>
 
-    [CmdletBinding(SupportsShouldProcess=$true, 
+    [CmdletBinding(SupportsShouldProcess=$true,
                   ConfirmImpact='High')]
 
     Param (
@@ -1688,7 +1756,7 @@ Function Remove-NSXTIPAMIPBlock {
                 throw "Could not connect to an NSX-T Manager, please try again"
             }
         }
-        
+
         $NSXTIPAMIPBlockService = Get-NsxtService -Name "com.vmware.nsx.pools.ip_blocks"
     }
 
@@ -1698,7 +1766,7 @@ Function Remove-NSXTIPAMIPBlock {
         {
             # Should process
             if ($pscmdlet.ShouldProcess($block_id, "Delete IP Pool"))
-            {  
+            {
                 $NSXTIPAMIPBlockService.delete($block_id)
             }
         }
@@ -1706,7 +1774,7 @@ Function Remove-NSXTIPAMIPBlock {
         catch
         {
             throw $Error[0].Exception.ServerError.data
-            # more error data found in the NSX-T Manager /var/log/vmware/nsx-manager.log file.  
+            # more error data found in the NSX-T Manager /var/log/vmware/nsx-manager.log file.
         }
     }
 }
@@ -1719,14 +1787,14 @@ Function Set-NSXTTraceFlow {
     .DESCRIPTION
        Create a TraceFlow for later observation.
     .EXAMPLE
-       Set-NSXTTraceFlow -transport_type "UNICAST" -lport_id "LP ID" -src_ip "IP Address" -src_mac "MAC" -dst_ip "IP Address" -dst_mac "MAC" 
+       Set-NSXTTraceFlow -transport_type "UNICAST" -lport_id "LP ID" -src_ip "IP Address" -src_mac "MAC" -dst_ip "IP Address" -dst_mac "MAC"
     .EXAMPLE
        Set-NSXTTraceFlow -transport_type "UNICAST" -lport_id "LP ID" -src_ip "IP Address" -src_mac "MAC" -dst_ip "IP Address" -dst_mac "MAC" | Get-NSXTTraceFlow
     .EXAMPLE
        Set-NSXTTraceFlow -transport_type "UNICAST" -lport_id "LP ID" -src_ip "IP Address" -src_mac "MAC" -dst_ip "IP Address" -dst_mac "MAC" | Get-NSXTTraceFlow | Get-NSXTTraceFlowObservations
-#>  
+#>
 
-    [CmdletBinding(SupportsShouldProcess=$true, 
+    [CmdletBinding(SupportsShouldProcess=$true,
                   ConfirmImpact='Medium')]
 
     # Paramameter Set variants will be needed Multicast & Broadcast Traffic Types as well as VM & Logical Port Types
@@ -1747,7 +1815,7 @@ Function Set-NSXTTraceFlow {
                         ValueFromPipeline=$true,
                         ParameterSetName='Parameter Set VM Type')]
             [ValidateNotNullOrEmpty()]
-            [ValidateScript({$_ -match [IPAddress]$_})] 
+            [ValidateScript({$_ -match [IPAddress]$_})]
             [string]
             $src_ip,
             [parameter(Mandatory=$true,
@@ -1765,7 +1833,7 @@ Function Set-NSXTTraceFlow {
                         ValueFromPipeline=$true,
                         ParameterSetName='Parameter Set VM Type')]
             [ValidateNotNullOrEmpty()]
-            [ValidateScript({$_ -match [IPAddress]$_ })] 
+            [ValidateScript({$_ -match [IPAddress]$_ })]
             [string]
             $dst_ip,
             [parameter(Mandatory=$true,
@@ -1784,7 +1852,7 @@ Function Set-NSXTTraceFlow {
     {
         if (-not $global:DefaultNsxtServers.isconnected)
         {
-        
+
             try
             {
                 Connect-NsxtServer -Menu -ErrorAction Stop
@@ -1795,11 +1863,11 @@ Function Set-NSXTTraceFlow {
                 throw "Could not connect to an NSX-T Manager, please try again"
             }
         }
-        
+
         $NSXTraceFlowsService = Get-NsxtService -Name "com.vmware.nsx.traceflows"
-        
+
          # Comment out custom classes
-        <#        
+        <#
         class ip_header {
             [string]$src_ip
             [string]$dst_ip
@@ -1819,7 +1887,7 @@ Function Set-NSXTTraceFlow {
             [long]$frame_size
             [eth_header]$eth_header = [eth_header]::new()
             [ip_header]$ip_header = [ip_header]::new()
-        
+
             packet_data(){
                 $this.routed = 'true'
                 $this.transport_type = 'UNICAST'
@@ -1845,7 +1913,7 @@ Function Set-NSXTTraceFlow {
 
         $traceflow_request.lport_id = $lport_id
         $traceflow_request.packet.transport_type = $transport_type
-        
+
         $eth_header = [ordered]@{'src_mac' = $src_mac;'eth_type' = '2048';'dst_mac' = $dst_mac}
         $ip_header  = [ordered]@{src_ip = $src_ip;protocol = '1';ttl = '64';dst_ip = $dst_ip}
         $traceflow_request.packet | Add-Member -NotePropertyMembers $eth_header -TypeName eth_header
@@ -1894,7 +1962,7 @@ Function Get-NSXTThingTemplate {
        Get-NSXTThingTemplate -param2 "LR Name"
     .EXAMPLE
        Get-NSXTThingTemplate -param2 (Get-NSXTLogicalRouter | where name -eq "LR Name")
-#>    
+#>
 
     Param (
         [parameter(Mandatory=$false,ValueFromPipelineByPropertyName=$true)]
@@ -1938,7 +2006,7 @@ Function Get-NSXTThingTemplate {
         }
 
         foreach ($NSXTThing in $NSXTThings) {
-            
+
             $results = [NSXTThing]::new()
             $results.Name = $NSXTThing.display_name;
             $results.Logical_router_id = $NSXTThing.Id;
@@ -1947,7 +2015,7 @@ Function Get-NSXTThingTemplate {
             $results.thing2 = $NSXTThing.thing2
 
              $results
-        }  
+        }
     }
 }
 
@@ -1957,29 +2025,29 @@ Function Set-NSXTThingTemplate {
     .Synopsis
        Creates a THING
     .DESCRIPTION
-       Creates a THING with a number of required parameters.  
+       Creates a THING with a number of required parameters.
     .EXAMPLE
        Set-NSXTThingTemplateh -param1 "Name" -param2 "TP Zone ID"
     .EXAMPLE
-       Set-NSXTThingTemplateh -param1 "Name" -param2 "TP Zone ID" 
-#>  
+       Set-NSXTThingTemplateh -param1 "Name" -param2 "TP Zone ID"
+#>
 
-    [CmdletBinding(SupportsShouldProcess=$true, 
+    [CmdletBinding(SupportsShouldProcess=$true,
                   ConfirmImpact='Medium')]
 
     # Paramameter Set variants will be needed Multicast & Broadcast Traffic Types as well as VM & Logical Port Types
     Param (
             [parameter(Mandatory=$false)]
             [string]$description,
-            
+
             [parameter(Mandatory=$true)]
             [ValidateNotNullOrEmpty()]
             [string]$display_name,
-            
+
             [parameter(Mandatory=$true)]
             [ValidateNotNullOrEmpty()]
             [string]$transport_zone_id,
-            
+
             [parameter(Mandatory=$true)]
             [ValidateSet("UP","DOWN")]
             [string]$admin_state,
@@ -2007,7 +2075,7 @@ Function Set-NSXTThingTemplate {
                 throw "Could not connect to an NSX-T Manager, please try again"
             }
         }
-        
+
         $NSXTTHINGService = Get-NsxtService -Name "com.vmware.nsx.THING"
     }
 
@@ -2027,7 +2095,7 @@ Function Set-NSXTThingTemplate {
         {
             # Should process
             if ($pscmdlet.ShouldProcess($ip_pool.display_name, "Create IP Pool"))
-            {  
+            {
                 $NSXTTHING = $NSXTTHINGService.create($logical_THING_request)
             }
         }
@@ -2035,7 +2103,7 @@ Function Set-NSXTThingTemplate {
         catch
         {
             throw $Error[0].Exception.ServerError.data
-            # more error data found in the NSX-T Manager /var/log/vmware/nsx-manager.log file.  
+            # more error data found in the NSX-T Manager /var/log/vmware/nsx-manager.log file.
         }
 
         $NSXTTHING
@@ -2048,12 +2116,12 @@ Function Remove-NSXTThingTemplate {
     .Synopsis
        Removes an IPAM IP Block
     .DESCRIPTION
-       Removes a IPAM IP Block with a block_id parameter.  
+       Removes a IPAM IP Block with a block_id parameter.
     .EXAMPLE
        Remove-NSXTIPAMIPBlock -block_id "id"
-#>  
+#>
 
-    [CmdletBinding(SupportsShouldProcess=$true, 
+    [CmdletBinding(SupportsShouldProcess=$true,
                   ConfirmImpact='High')]
 
     Param (
@@ -2077,7 +2145,7 @@ Function Remove-NSXTThingTemplate {
                 throw "Could not connect to an NSX-T Manager, please try again"
             }
         }
-        
+
         $NSXTTHINGkService = Get-NsxtService -Name "com.vmware.nsx.THING"
     }
 
@@ -2087,7 +2155,7 @@ Function Remove-NSXTThingTemplate {
         {
             # Should process
             if ($pscmdlet.ShouldProcess($thing_id, "Delete IP Pool"))
-            {  
+            {
                 $NSXTTHINGkService.delete($thing_id)
             }
         }
@@ -2095,7 +2163,7 @@ Function Remove-NSXTThingTemplate {
         catch
         {
             throw $Error[0].Exception.ServerError.data
-            # more error data found in the NSX-T Manager /var/log/vmware/nsx-manager.log file.  
+            # more error data found in the NSX-T Manager /var/log/vmware/nsx-manager.log file.
         }
     }
 }
