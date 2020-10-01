@@ -109,15 +109,17 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
             }
 
 
-            try {
-                Section -Style Heading2 'NSX-T Edge Nodes' {
-                    Paragraph 'The following section provides a summary of the configured Edge Nodes.'
-                    BlankLine
-                    Get-NSXTFabricNode -Edge | Table -Name 'NSX-T Edge Nodes' -List
-                }
-            } catch {
-                Write-Error $_
-            }
+            # Known issue, but no solution:
+            #   OperationStopped: Unable to get field 'resource_type', no field of that name found
+            #try {
+            #    Section -Style Heading2 'NSX-T Edge Nodes' {
+            #        Paragraph 'The following section provides a summary of the configured Edge Nodes.'
+            #        BlankLine
+            #        Get-NSXTFabricNode -Edge | Table -Name 'NSX-T Edge Nodes' -List
+            #    }
+            #} catch {
+            #    Write-Error $_
+            #}
 
 
             try {
@@ -154,13 +156,162 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
                 Write-Error $_
             }
 
+            # get logical routers
             try {
                 $LR = Get-NSXTLogicalRouter
                 if ($LR) {
                     Section -Style Heading2 'NSX-T Logical Routers' {
-                        Paragraph 'The following section provides a summary of the configured Compute Managers.'
+                        Paragraph 'The following section provides details about the configured logical routers.'
                         BlankLine
-                        $LR | Table -Name 'NSX-T Logical Routers' -List
+
+                        foreach ($RouterInfo in $LR)
+                        {
+                            Section -Style Heading3 "Router: $($RouterInfo.Name)" {
+                                Paragraph 'The following section provides more details about the logical router.'
+                                BlankLine
+                                $RouterInfo | Table -Name 'NSX-T Logical Routers' -List
+                                BlankLine
+
+                                ### INTERFACES ###
+                                try {
+                                    $interfaces = Get-NSXTLogicalRouterPorts -logical_router_id $RouterInfo.Logical_router_id
+                                    if($interfaces)
+                                    {
+                                        Section -Style Heading4 'Interfaces' {
+                                            Paragraph 'The following section provides a summary of the configured interfaces.'
+                                            BlankLine
+                                            $interfaces | Table -Name 'Interfaces' -List
+                                        }
+
+                                        BlankLine
+                                    }
+                                } catch {
+                                    Write-Error $_
+                                }
+
+                                ### BGP - Only on TIER0s ###
+                                if($RouterInfo.router_type -eq "TIER0")
+                                {
+                                    # Redistribution config
+                                    try {
+                                        $redist_status = Get-NSXTRedistributionStatus -logical_router_id $RouterInfo.Logical_router_id
+                                        if($redist_status)
+                                        {
+                                            Section -Style Heading4 'BGP Redistribution Status' {
+                                                $redist_status | Table -Name 'BGP Redistribution Status' -List
+                                            }
+
+                                            BlankLine
+                                        }
+                                    } catch {
+                                        Write-Error $_
+                                    }
+
+                                    # Redistribution rules
+                                    try {
+                                        $redist_rules = Get-NSXTRedistributionRule -logical_router_id $RouterInfo.Logical_router_id
+                                        if($redist_rules)
+                                        {
+                                            Section -Style Heading4 'BGP Redistribution Rules' {
+                                                $redist_rules | Table -Name 'BGP Redistribution Rules' -List
+                                            }
+
+                                            BlankLine
+                                        }
+                                    } catch {
+                                        Write-Error $_
+                                    }
+
+                                    # Neighbhors
+                                    try {
+                                        $bgp = Get-NSXTBGPNeighbors -logical_router_id $RouterInfo.Logical_router_id
+                                        if($bgp)
+                                        {
+                                            Section -Style Heading4 'BGP Neighbors' {
+                                                Paragraph 'The following section provides a summary of the configured BGP neighbors.'
+                                                BlankLine
+                                                $bgp | Table -Name 'BGP Neighbors' -List
+                                            }
+
+                                            BlankLine
+                                        }
+                                    } catch {
+                                        Write-Error $_
+                                    }
+                                } # end if($RouterInfo.router_type -eq "TIER0")
+
+
+                                ### Advertisement rules - Only on TIER1s ###
+                                if($RouterInfo.router_type -eq "TIER1")
+                                {
+                                    # Advertisement config
+                                    try {
+                                        $adver_status = Get-NSXTAdvertisementStatus -logical_router_id $RouterInfo.Logical_router_id
+                                        if($adver_status)
+                                        {
+                                            Section -Style Heading4 'Advertisement Status' {
+                                                $adver_status | Table -Name 'Advertisement Status' -List
+                                            }
+
+                                            BlankLine
+                                        }
+                                    } catch {
+                                        Write-Error $_
+                                    }
+
+                                    # Advertisement rules
+                                    try {
+                                        $adver_rules = Get-NSXTAdvertisementRule -logical_router_id $RouterInfo.Logical_router_id
+                                        if($adver_rules)
+                                        {
+                                            Section -Style Heading4 'Advertisement Rules' {
+                                                $adver_rules | Table -Name 'Advertisement Rules' -List
+                                            }
+
+                                            BlankLine
+                                        }
+                                    } catch {
+                                        Write-Error $_
+                                    }
+                                } # end if($RouterInfo.router_type -eq "TIER1")
+
+                                ### Static Routes ###
+                                try {
+                                    $static = Get-NSXTStaticRoute -logical_router_id $RouterInfo.Logical_router_id
+                                    if($static)
+                                    {
+                                        Section -Style Heading4 'Static Routes' {
+                                            Paragraph 'The following section provides a summary of the configured static routes.'
+                                            BlankLine
+                                            $static | Table -Name 'Static Routes' -List
+                                        }
+
+                                        BlankLine
+                                    }
+                                } catch {
+                                    Write-Error $_
+                                }
+
+                                ### NAT ####
+                                try {
+                                    $nat = Get-NSXTNATRule -logical_router_id $RouterInfo.Logical_router_id
+                                    if($nat)
+                                    {
+                                        Section -Style Heading4 'NAT Rules' {
+                                            Paragraph 'The following section provides a summary of the configured NAT rules.'
+                                            BlankLine
+                                            $nat | Table -Name 'NAT Rules' -List
+                                        }
+
+                                        BlankLine
+                                    }
+                                } catch {
+                                    Write-Error $_
+                                }
+
+
+                            } # end Section -Style Heading3 $LR.Name {
+                        }
                     }
                 }
             } catch {
@@ -221,17 +372,6 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
 
 
         } # end Section -Style Heading1 'NSX-T Inventory' {
-
-
-
-
-        # Section -Style Heading2 'BGP Neighbours' {
-        #     Paragraph 'The following section provides a summary of the configured Compute Managers.'
-        #     BlankLine
-        #     Get-NSXTBGPNeighbors  | Table -Name 'BGP Neighbours' -List
-        # }
-
-
 
 
         Disconnect-NsxtServer -Confirm:$false

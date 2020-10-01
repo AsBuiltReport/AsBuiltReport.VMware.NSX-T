@@ -33,8 +33,14 @@
                         'Set-NSXTTraceFlow',
                         'Get-NSXTIPAMIPBlock',
                         'Set-NSXTIPAMIPBlock',
-                        'Remove-NSXTIPAMIPBlock'
-                        
+                        'Remove-NSXTIPAMIPBlock',
+                        'Get-NSXTNATRule',
+                        'Get-NSXTStaticRoute',
+                        'Get-NSXTRedistributionStatus',
+                        'Get-NSXTRedistributionRule',
+                        'Get-NSXTAdvertisementStatus',
+                        'Get-NSXTAdvertisementRule'
+
 
 	PrivateData = @{
 		PSData = @{
