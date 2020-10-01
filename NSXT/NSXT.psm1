@@ -540,10 +540,63 @@ Function Get-NSXTNATRule {
               $results.protection = $NSXTNATRule.protection;
               $results.internal_rule_id = $NSXTNATRule.internal_rule_id;
               $results
-          }
-      }
-  }
+        }
+    }
+}
 
+Function Get-NSXTStaticRoute {
+    <#
+      .Synopsis
+         Retrieves the static route information
+      .DESCRIPTION
+         Retrieves static routes for a single LR. Must specify Logical_router_id. Pipeline input supported.
+      .EXAMPLE
+         Get-NSXTStaticRoute -Logical_router_id "LR ID" | format-table -autosize
+  #>
+
+    Param (
+        [parameter(Mandatory=$true,ValueFromPipelineByPropertyName=$true)]
+        [string]$Logical_router_id
+    )
+
+    Begin
+    {
+        $NSXTStaticRouteService = Get-NsxtService -Name "com.vmware.nsx.logical_routers.routing.static_routes"
+
+        class NSXTStaticRoute {
+            hidden [string]$Logical_router_id
+            hidden [string]$internal_route_id
+            [string]$network
+            [string]$description
+            [string]$protection
+
+            # this is pretty ugly, but PScribo doesn't handle nested arrays or objects very well
+            [string]$next_hop_ip
+            [string]$next_hop_distance
+            [string]$next_hop_bfd_enabled
+        }
+    }
+
+    Process
+    {
+        $NSXTStaticRoutes = $NSXTStaticRouteService.list($Logical_router_id)
+
+        foreach ($NSXTStaticRoute in $NSXTStaticRoutes.results)
+        {
+
+              $results = [NSXTStaticRoute]::new()
+              $results.Logical_router_id = $Logical_router_id;
+              $results.internal_route_id = $NSXTStaticRoute.id;
+              $results.network = $NSXTStaticRoute.network;
+              $results.next_hop_ip = $NSXTStaticRoute[0].next_hops.ip_address;
+              $results.next_hop_distance = $NSXTStaticRoute[0].next_hops.administrative_distance;
+              $results.next_hop_bfd_enabled = $NSXTStaticRoute[0].next_hops.bfd_enabled;
+              $results.description = $NSXTStaticRoute.description;
+              $results.protection = $NSXTStaticRoute.protection;
+              $results
+        }
+    }
+}
 
 
 Function Get-NSXTRoutingTable {

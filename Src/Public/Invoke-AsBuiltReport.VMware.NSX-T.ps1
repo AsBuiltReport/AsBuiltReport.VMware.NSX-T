@@ -109,15 +109,17 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
             }
 
 
-            try {
-                Section -Style Heading2 'NSX-T Edge Nodes' {
-                    Paragraph 'The following section provides a summary of the configured Edge Nodes.'
-                    BlankLine
-                    Get-NSXTFabricNode -Edge | Table -Name 'NSX-T Edge Nodes' -List
-                }
-            } catch {
-                Write-Error $_
-            }
+            # Known issue, but no solution:
+            #   OperationStopped: Unable to get field 'resource_type', no field of that name found
+            #try {
+            #    Section -Style Heading2 'NSX-T Edge Nodes' {
+            #        Paragraph 'The following section provides a summary of the configured Edge Nodes.'
+            #        BlankLine
+            #        Get-NSXTFabricNode -Edge | Table -Name 'NSX-T Edge Nodes' -List
+            #    }
+            #} catch {
+            #    Write-Error $_
+            #}
 
 
             try {
@@ -206,6 +208,25 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
                                         Write-Error $_
                                     }
                                 }
+
+                                ### Static Routes ###
+                                try {
+                                    $static = Get-NSXTStaticRoute -logical_router_id $RouterInfo.Logical_router_id
+                                    if($static)
+                                    {
+                                        Section -Style Heading4 'Static Routes' {
+                                            Paragraph 'The following section provides a summary of the configured static routes.'
+                                            BlankLine
+                                            $static | Table -Name 'Static Routes' -List
+                                        }
+
+                                        BlankLine
+                                    }
+                                } catch {
+                                    Write-Error $_
+                                }
+
+
 
                                 ### NAT ####
                                 try {
