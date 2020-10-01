@@ -35,7 +35,11 @@
                         'Set-NSXTIPAMIPBlock',
                         'Remove-NSXTIPAMIPBlock',
                         'Get-NSXTNATRule',
-                        'Get-NSXTStaticRoute'
+                        'Get-NSXTStaticRoute',
+                        'Get-NSXTRedistributionStatus',
+                        'Get-NSXTRedistributionRule',
+                        'Get-NSXTAdvertisementStatus',
+                        'Get-NSXTAdvertisementRule'
 
 
 	PrivateData = @{

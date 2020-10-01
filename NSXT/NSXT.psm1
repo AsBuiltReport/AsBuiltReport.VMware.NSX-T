@@ -583,7 +583,6 @@ Function Get-NSXTStaticRoute {
 
         foreach ($NSXTStaticRoute in $NSXTStaticRoutes.results)
         {
-
               $results = [NSXTStaticRoute]::new()
               $results.Logical_router_id = $Logical_router_id;
               $results.internal_route_id = $NSXTStaticRoute.id;
@@ -597,6 +596,197 @@ Function Get-NSXTStaticRoute {
         }
     }
 }
+
+Function Get-NSXTRedistributionStatus {
+    <#
+      .Synopsis
+         Retrieves the redistribution status
+      .DESCRIPTION
+         Retrieves the redistribution status for a single LR. Must specify Logical_router_id. Pipeline input supported.
+      .EXAMPLE
+         Get-NSXTRedistributionStatus -Logical_router_id "LR ID" | format-table -autosize
+  #>
+
+    Param (
+        [parameter(Mandatory=$true,ValueFromPipelineByPropertyName=$true)]
+        [string]$Logical_router_id
+    )
+
+    Begin
+    {
+        $NSXTStaticRouteService = Get-NsxtService -Name "com.vmware.nsx.logical_routers.routing.redistribution"
+
+        class NSXTRedistributionStatus {
+            hidden [string]$Logical_router_id
+            [bool]$bgp_enabled
+        }
+    }
+
+    Process
+    {
+        $NSXTRedistStatus = $NSXTStaticRouteService.get($Logical_router_id)
+        $results = [NSXTRedistributionStatus]::new()
+        $results.Logical_router_id = $Logical_router_id;
+        $results.bgp_enabled = $NSXTRedistStatus.bgp_enabled;
+        $results
+    }
+}
+
+Function Get-NSXTRedistributionRule {
+    <#
+      .Synopsis
+         Retrieves the redistribution rules
+      .DESCRIPTION
+         Retrieves the redistribution rules for a single LR. Must specify Logical_router_id. Pipeline input supported.
+      .EXAMPLE
+         Get-NSXTRedistributionRule -Logical_router_id "LR ID" | format-table -autosize
+  #>
+
+    Param (
+        [parameter(Mandatory=$true,ValueFromPipelineByPropertyName=$true)]
+        [string]$Logical_router_id
+    )
+
+    Begin
+    {
+        $NSXTRedistRulesService = Get-NsxtService -Name "com.vmware.nsx.logical_routers.routing.redistribution.rules"
+
+        class NSXTRedistributionRule {
+            hidden [string]$Logical_router_id
+            [string]$sources
+            [string]$destination
+            [string]$address_family
+            [string]$name
+            [string]$description
+            [string]$route_map_id
+        }
+    }
+
+    Process
+    {
+        $NSXTRedistRules = $NSXTRedistRulesService.get($Logical_router_id)
+
+        foreach ($NSXTRedistRule in $NSXTRedistRules.rules)
+        {
+            $results = [NSXTRedistributionRule]::new()
+            $results.Logical_router_id = $Logical_router_id;
+            $results.sources = $NSXTRedistRule.sources;
+            $results.destination = $NSXTRedistRule.destination;
+            $results.address_family = $NSXTRedistRule.address_family;
+            $results.name = $NSXTRedistRule.display_name;
+            $results.description = $NSXTRedistRule.description;
+            $results.route_map_id = $NSXTRedistRule.route_map_id;
+            $results
+        }
+    }
+}
+
+
+
+
+
+Function Get-NSXTAdvertisementStatus {
+    <#
+      .Synopsis
+         Retrieves the advertisement status
+      .DESCRIPTION
+         Retrieves the advertisement status for a single LR. Must specify Logical_router_id. Pipeline input supported.
+      .EXAMPLE
+         Get-NSXTAdvertisementStatus -Logical_router_id "LR ID" | format-table -autosize
+  #>
+
+    Param (
+        [parameter(Mandatory=$true,ValueFromPipelineByPropertyName=$true)]
+        [string]$Logical_router_id
+    )
+
+    Begin
+    {
+        $NSXTAdvertisementService = Get-NsxtService -Name "com.vmware.nsx.logical_routers.routing.advertisement"
+
+        class NSXTAdvertisementStatus {
+            hidden [string]$Logical_router_id
+            [bool]$advertisement_enabled
+            [bool]$advertise_nsx_connected_routes
+            [bool]$advertise_nat_routes
+            [bool]$advertise_static_routes
+            [bool]$advertise_lb_vip
+            [bool]$advertise_lb_snat_ip
+            [bool]$advertise_dns_forwarder
+            [bool]$advertise_ipsec_local_ip
+        }
+    }
+
+    Process
+    {
+        $NSXTAdverStatus = $NSXTAdvertisementService.get($Logical_router_id)
+
+        $results = [NSXTAdvertisementStatus]::new()
+        $results.Logical_router_id = $Logical_router_id;
+        $results.advertisement_enabled = $NSXTAdverStatus.bgp_enabled;
+        $results.advertisement_enabled = $NSXTAdverStatus.advertisement_enabled;
+        $results.advertise_nsx_connected_routes = $NSXTAdverStatus.advertise_nsx_connected_routes;
+        $results.advertise_nat_routes = $NSXTAdverStatus.advertise_nat_routes;
+        $results.advertise_static_routes = $NSXTAdverStatus.advertise_static_routes;
+        $results.advertise_lb_vip = $NSXTAdverStatus.advertise_lb_vip;
+        $results.advertise_lb_snat_ip = $NSXTAdverStatus.advertise_lb_snat_ip;
+        $results.advertise_dns_forwarder = $NSXTAdverStatus.advertise_dns_forwarder;
+        $results.advertise_ipsec_local_ip = $NSXTAdverStatus.advertise_ipsec_local_ip;
+        $results
+    }
+}
+
+Function Get-NSXTAdvertisementRule {
+    <#
+      .Synopsis
+         Retrieves the advertisement rules
+      .DESCRIPTION
+         Retrieves the advertisement rules for a single LR. Must specify Logical_router_id. Pipeline input supported.
+      .EXAMPLE
+         Get-NSXTAdvertisementRule -Logical_router_id "LR ID" | format-table -autosize
+  #>
+
+    Param (
+        [parameter(Mandatory=$true,ValueFromPipelineByPropertyName=$true)]
+        [string]$Logical_router_id
+    )
+
+    Begin
+    {
+        $NSXTRedistRulesService = Get-NsxtService -Name "com.vmware.nsx.logical_routers.routing.advertisement.rules"
+
+        class NSXTAdvertisementRule {
+            hidden [string]$Logical_router_id
+            [string]$sources
+            [string]$destination
+            [string]$address_family
+            [string]$name
+            [string]$description
+            [string]$route_map_id
+        }
+    }
+
+    Process
+    {
+        $NSXTRedistRules = $NSXTRedistRulesService.get($Logical_router_id)
+
+        foreach ($NSXTRedistRule in $NSXTRedistRules.rules)
+        {
+            $results = [NSXTRedistributionRule]::new()
+            $results.Logical_router_id = $Logical_router_id;
+            $results.sources = $NSXTRedistRule.sources;
+            $results.destination = $NSXTRedistRule.destination;
+            $results.address_family = $NSXTRedistRule.address_family;
+            $results.name = $NSXTRedistRule.display_name;
+            $results.description = $NSXTRedistRule.description;
+            $results.route_map_id = $NSXTRedistRule.route_map_id;
+            $results
+        }
+    }
+}
+
+
+
 
 
 Function Get-NSXTRoutingTable {

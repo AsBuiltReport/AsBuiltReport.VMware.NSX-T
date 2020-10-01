@@ -192,6 +192,37 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
                                 ### BGP - Only on TIER0s ###
                                 if($RouterInfo.router_type -eq "TIER0")
                                 {
+                                    # Redistribution config
+                                    try {
+                                        $redist_status = Get-NSXTRedistributionStatus -logical_router_id $RouterInfo.Logical_router_id
+                                        if($redist_status)
+                                        {
+                                            Section -Style Heading4 'BGP Redistribution Status' {
+                                                $redist_status | Table -Name 'BGP Redistribution Status' -List
+                                            }
+
+                                            BlankLine
+                                        }
+                                    } catch {
+                                        Write-Error $_
+                                    }
+
+                                    # Redistribution rules
+                                    try {
+                                        $redist_rules = Get-NSXTRedistributionRule -logical_router_id $RouterInfo.Logical_router_id
+                                        if($redist_rules)
+                                        {
+                                            Section -Style Heading4 'BGP Redistribution Rules' {
+                                                $redist_rules | Table -Name 'BGP Redistribution Rules' -List
+                                            }
+
+                                            BlankLine
+                                        }
+                                    } catch {
+                                        Write-Error $_
+                                    }
+
+                                    # Neighbhors
                                     try {
                                         $bgp = Get-NSXTBGPNeighbors -logical_router_id $RouterInfo.Logical_router_id
                                         if($bgp)
@@ -207,7 +238,42 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
                                     } catch {
                                         Write-Error $_
                                     }
-                                }
+                                } # end if($RouterInfo.router_type -eq "TIER0")
+
+
+                                ### Advertisement rules - Only on TIER1s ###
+                                if($RouterInfo.router_type -eq "TIER1")
+                                {
+                                    # Advertisement config
+                                    try {
+                                        $adver_status = Get-NSXTAdvertisementStatus -logical_router_id $RouterInfo.Logical_router_id
+                                        if($adver_status)
+                                        {
+                                            Section -Style Heading4 'Advertisement Status' {
+                                                $adver_status | Table -Name 'Advertisement Status' -List
+                                            }
+
+                                            BlankLine
+                                        }
+                                    } catch {
+                                        Write-Error $_
+                                    }
+
+                                    # Advertisement rules
+                                    try {
+                                        $adver_rules = Get-NSXTAdvertisementRule -logical_router_id $RouterInfo.Logical_router_id
+                                        if($adver_rules)
+                                        {
+                                            Section -Style Heading4 'Advertisement Rules' {
+                                                $adver_rules | Table -Name 'Advertisement Rules' -List
+                                            }
+
+                                            BlankLine
+                                        }
+                                    } catch {
+                                        Write-Error $_
+                                    }
+                                } # end if($RouterInfo.router_type -eq "TIER1")
 
                                 ### Static Routes ###
                                 try {
@@ -226,8 +292,6 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
                                     Write-Error $_
                                 }
 
-
-
                                 ### NAT ####
                                 try {
                                     $nat = Get-NSXTNATRule -logical_router_id $RouterInfo.Logical_router_id
@@ -244,8 +308,6 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
                                 } catch {
                                     Write-Error $_
                                 }
-
-
 
 
                             } # end Section -Style Heading3 $LR.Name {
