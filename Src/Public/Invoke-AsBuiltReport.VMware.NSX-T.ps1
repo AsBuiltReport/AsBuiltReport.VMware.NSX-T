@@ -36,7 +36,9 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
             Write-PScriboMessage "Connecting to NSX-T Manager '$NsxManager'."
             Connect-NsxtServer -Server $nsxManager -Credential $Credential -ErrorAction Stop
         } catch {
+            Write-Error "Unable to connect to NSX-T Manager '$NsxManager'"
             Write-Error $_
+            Continue
         }
 
         Section -Style Heading2 'Compute Managers' {
@@ -56,7 +58,7 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
         #     BlankLine
         #     Get-NSXTBGPNeighbors  | Table -Name 'BGP Neighbours' -List
         # }
-        
+
         Section -Style Heading2 'Cluster Mode' {
             Paragraph 'The following section provides a summary of the configured Compute Managers.'
             BlankLine
@@ -102,7 +104,7 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
         #     Get-NSXTForwardingTable  | Table -Name 'NSX-T Forwarding Table' -List
         # }
 
-        $IPAMBlock = Get-NSXTIPAMIPBlock 
+        $IPAMBlock = Get-NSXTIPAMIPBlock
         if ($IPAMBlock) {
             Section -Style Heading2 'NSX-T IPAM Block' {
                 Paragraph 'The following section provides a summary of the configured Compute Managers.'
@@ -125,7 +127,7 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
                 $LR | Table -Name 'NSX-T Logical Routers' -List
             }
         }
-        
+
         Section -Style Heading2 'NSX-T ' {
             Paragraph 'The following section provides a summary of the configured Compute Managers.'
             BlankLine
@@ -167,18 +169,18 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
             BlankLine
             Get-NSXTTransportZone  | Table -Name 'NSX-T ' -List
         }
-        <#      
+        <#
         Section -Style Heading2 'NSX-T ' {
             Paragraph 'The following section provides a summary of the configured Compute Managers.'
             BlankLine
               | Table -Name 'NSX-T ' -List
         }
-        
+
         #Get-NSXTRoutingTable
-        
+
         #Get-NSXTTraceFlowObservations
-        
-        
+
+
         #>
 
         Disconnect-NsxtServer -Confirm:$false
