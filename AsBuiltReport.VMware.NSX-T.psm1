@@ -13,4 +13,8 @@ foreach ($Module in @($Public + $Private)) {
 Export-ModuleMember -Function $Public.BaseName
 Export-ModuleMember -Function $Private.BaseName
 
-Import-Module -Force $PSScriptRoot/NSXT/NSXT.psd1
+If (Test-Path $PSScriptRoot/NSXT/NSXT.psd1) {
+    Import-Module $PSScriptRoot/NSXT/NSXT.psd1
+} elseif (Test-Path ./NSXT/NSXT.psd1) {
+    Import-Module ./NSXT/NSXT.psd1
+}
