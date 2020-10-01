@@ -1,0 +1,8 @@
+{
+	"name": "AsBuiltReport.VMware.NSX-T Development Container",
+	"dockerFile": "Dockerfile",
+	"postCreateCommand": "pwsh",
+	"extensions": [
+		"ms-vscode.powershell"
+	]
+}
