@@ -1,8 +1,13 @@
 # :arrows_counterclockwise: VMware NSX-T As Built Report Changelog
 
-## [x.y.z] - Unreleased
+## [0.1.0] - YYYY-MM-DD
+
 ### Added
 
 ### Changed
 
 ### Fixed
+
+### Removed
+
+
