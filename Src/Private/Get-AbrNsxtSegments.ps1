@@ -19,8 +19,8 @@ function Get-AbrNsxtSegments {
     process {
         $Segments= (get-abrNsxtApi -uri "/policy/api/v1/infra/segments").results
         $SegmentInfo = foreach ($Segment in $Segments){
-            If($segment.vlan_ids){
-                $vlanId = $segment.vlan_ids[0]
+            If($segment.vlan_ids[0]){
+                $vlanId = $segment.vlan_ids[0].tostring()
             }else{
                 $vlanId = "NA"
             }
