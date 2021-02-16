@@ -1,7 +1,7 @@
-function Get-AbrVxRailHostDisk {
+function Get-AbrNsxtSegments {
     <#
     .SYNOPSIS
-    Used by As Built Report to retrieve VMware NSXT Information
+    Used by As Built Report to retrieve VMware NSXT Segment Information
     .DESCRIPTION
     .NOTES
         Version:        0.1.0
@@ -11,21 +11,16 @@ function Get-AbrVxRailHostDisk {
     .EXAMPLE
     .LINK
     #>
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
-        [ValidateNotNullOrEmpty()]
-        [Object]$VxrHost
-    )
 
     begin {
-        Write-PscriboMessage "Collecting $($VxrHost.hostname) information."
+        Write-PscriboMessage "Collecting $($System) information."
     }
 
     process {
-        $VxrHostDisks = $VxrHost.disks | Sort-Object enclosure, bay, slot
-        if ($VxrHostDisks) {
-            Section -Style Heading4 "Disks" {
+        $SegmentJson = get-abrNsxtApi -version 1 -uri "/policy/api/v1/infra/segments"
+        Write-host $SegmentJson
+        <#f ($SegmentJson) {
+            Section -Style Heading4 "Segments" {
                 $VxrHostDiskInfo = foreach ($VxrHostDisk in $VxrHostDisks) {
                     [PSCustomObject]@{
                         'Enclosure' = $VxrHostDisk.Enclosure
@@ -71,7 +66,7 @@ function Get-AbrVxRailHostDisk {
                     $VxrHostDiskInfo | Table @TableParams
                 }
             }
-        }
+        }#>
     }
 
     end {
