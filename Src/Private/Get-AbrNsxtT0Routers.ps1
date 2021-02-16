@@ -34,7 +34,7 @@ function Get-AbrNsxtT0Routers {
                 'Path' = $T0Router.path
                 'Relative Path' = $T0Router.relative_path
                 'Parent Path' = $T0Router.parent_path
-                'unique_id' = $T0Router.unique_id
+                'Unique ID' = $T0Router.unique_id
                 'Marked for Delete' = $T0Router.marked_for_delete
                 'Overridden' = $T0Router.overridden
                 'Create User' = $T0Router._create_user
@@ -49,8 +49,8 @@ function Get-AbrNsxtT0Routers {
         $TableParams = @{
             Name = "T0 Routers - $($system)"
             Headers = 'Name',         'Type', 'HA Mode', 'Failover Mode', 'ID'
-            Columns = 'Display Name', 'Type', 'HA Mode', 'Failover Mode', 'ID'
-            ColumnWidths = 20,15,20,25,20
+            Columns = 'Display Name', 'Type', 'HA Mode', 'Failover Mode', 'Unique ID'
+            ColumnWidths = 20,10,20,25,25
         }
         if ($Report.ShowTableCaptions) {
             $TableParams['Caption'] = "- $($TableParams.Name)"
