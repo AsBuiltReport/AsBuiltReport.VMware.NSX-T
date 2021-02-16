@@ -73,7 +73,6 @@ function Get-AbrNsxtApi {
         $headers = @{
             'Authorization' = "Basic $auth"
         }
-        write-host $headers
         #Setup base API URLs
         $systemUrl = "https://" + $System + "/"
     }
@@ -82,12 +81,36 @@ function Get-AbrNsxtApi {
         #clean up uri to remove leading "/"
         $uri = $uri.TrimStart("/")    
         $url = $systemUrl + $uri 
-        Try {
-            Write-host $url
-            return Invoke-WebRequest -Method $method -uri $url -Headers $headers
-        } Catch {
-            Write-Verbose -Message "Error with API reference call to $(($URI).TrimStart('/'))"
-            Write-Verbose -Message $_
+        $NsxtApiServiceUnavailable = 1
+        $NsxtApiOverloaded = 1
+        function Invoke-ApiCall{
+            Try {
+                $response =  Invoke-WebRequest -Method $method -uri $url -Headers $headers -UseBasicParsing
+                switch ($response.statuscode) {
+                    200 {
+                        Return $response.content
+                    }
+                    404 {
+                        Write-PscriboMessage "NSX-T API Error HTTP Code 404"
+                        Write-PscriboMessage "API Request URL: $url"
+                    }
+                    429 {
+                        Write-PscriboMessage "NSX-T API Overloaded HTTP Code 429, retry $NsxtApiOverloaded of 5"
+                        $NsxtApiOverloaded++ 
+                        start-sleep -Seconds 1
+                        Invoke-NSXTApiCall
+                    }
+                    503 {
+                        Write-PscriboMessage "NSX-T API Service Unavailable HTTP Code 503, retry $NsxtApiServiceUnavailable of 5"
+                        $NsxtApiServiceUnavailable++
+                        start-sleep -Seconds 1
+                        Invoke-NSXTApiCall
+                    }
+                }
+            } Catch {
+                Write-Verbose -Message "Error with API reference call to $(($URI).TrimStart('/'))"
+                Write-Verbose -Message $_
+            }
         }
     }
 
