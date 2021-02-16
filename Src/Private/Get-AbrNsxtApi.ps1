@@ -75,15 +75,13 @@ function Get-AbrNsxtApi {
         }
 
         #Setup base API URLs
-        $api_v1 = "https://" + $System + "/api/v1/"
+        $systemUrl = "https://" + $System + "/"
     }
 
     Process {
         #clean up uri to remove leading "/"
         $uri = $uri.TrimStart("/")    
-        Switch ($version) {
-            '1' { $url = $api_v1 + $uri }
-        }
+        $url = $systemUrl + $uri 
         Try {
             Write-host $url
             return Invoke-WebRequest -Method $method -uri $url -Headers $headers
