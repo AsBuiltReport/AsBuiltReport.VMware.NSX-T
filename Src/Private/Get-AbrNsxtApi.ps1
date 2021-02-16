@@ -85,7 +85,8 @@ function Get-AbrNsxtApi {
             '1' { $url = $api_v1 + $uri }
         }
         Try {
-            Invoke-WebRequest -Method $method -uri $url -Headers $headers
+            Write-host $url
+            return Invoke-WebRequest -Method $method -uri $url -Headers $headers
         } Catch {
             Write-Verbose -Message "Error with API reference call to $(($URI).TrimStart('/'))"
             Write-Verbose -Message $_
