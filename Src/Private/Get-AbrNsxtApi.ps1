@@ -22,7 +22,7 @@ function Get-AbrNsxtApi {
             Mandatory = $false
         )]
         [ValidateSet("GET")]
-        [Int] $Method = "GET",
+        [string] $Method = "GET",
         [Parameter(
             Mandatory = $true
         )]
