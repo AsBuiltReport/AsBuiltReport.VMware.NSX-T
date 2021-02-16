@@ -19,7 +19,7 @@ function Get-AbrNsxtT0Routers {
 
     process {
         $T0Routers = (get-abrNsxtApi -uri "/policy/api/v1/infra/tier-0s").results
-        $T0RouterInfo = ForEach-Object ($T0Router in $T0Routers){
+        $T0RouterInfo = foreach ($T0Router in $T0Routers){
             [PSCustomObject]@{
                 'Transit Subnets' = $T0Router.transit_subnets
                 'Internal Transit Subnets' = $T0Router.internal_transit_subnets
