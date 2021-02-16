@@ -26,7 +26,7 @@ function Get-AbrNsxtApi {
     )
 
     Begin {
-    <##region Workaround for SelfSigned Cert an force TLS 1.2
+    #region Workaround for SelfSigned Cert an force TLS 1.2
         if (-not ([System.Management.Automation.PSTypeName]'ServerCertificateValidationCallback').Type) {
             Write-PscriboMessage "Setting policy to ignore self signed certificate warnings"
             $certCallback = @"
@@ -59,7 +59,7 @@ function Get-AbrNsxtApi {
         }
         [ServerCertificateValidationCallback]::Ignore()
         [Net.ServicePointManager]::SecurityProtocol = "tls12, tls11, tls"
-        #endregion Workaround for SelfSigned Cert an force TLS 1.2 #>
+        #endregion Workaround for SelfSigned Cert an force TLS 1.2 
 
         #Convert username and password into basic auth header
         $username = $Credential.UserName

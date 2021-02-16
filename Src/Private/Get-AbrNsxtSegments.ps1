@@ -18,56 +18,45 @@ function Get-AbrNsxtSegments {
 
     process {
         $Segments= (get-abrNsxtApi -uri "/policy/api/v1/infra/segments").results
-        $Segments
-        
-        <#f ($SegmentJson) {
-            Section -Style Heading4 "Segments" {
-                $VxrHostDiskInfo = foreach ($VxrHostDisk in $VxrHostDisks) {
-                    [PSCustomObject]@{
-                        'Enclosure' = $VxrHostDisk.Enclosure
-                        'Bay' = $VxrHostDisk.Bay
-                        'Slot' = $VxrHostDisk.Slot
-                        'Serial Number' = $VxrHostDisk.sn
-                        'Manufacturer' = $VxrHostDisk.manufacturer
-                        'Model' = $VxrHostDisk.model
-                        'Firmware' = $VxrHostDisk.firmware_revision
-                        'Disk Type' = $VxrHostDisk.disk_type
-                        'Capacity' = $VxrHostDisk.capacity
-                        'Speed' = $VxrHostDisk.max_capable_speed
-                        'Status' = $VxrHostDisk.disk_state
-                    }
-                }
-                if ($Healthcheck.Appliance.DiskStatus) {
-                    $VxrHostDiskInfo | Where-Object { $_.'Status' -ne 'OK' } | Set-Style -Style Critical -Property 'Status'
-                }
-                if ($InfoLevel.Appliance -ge 2) {
-                    foreach ($VxrHostDisk in $VxrHostDiskInfo) {
-                        Section -Style Heading5 "Enclosure $($VxrHostDisk.Enclosure) Bay $($VxrHostDisk.Bay) Disk $($VxrHostDisk.Slot)" {
-                            $TableParams = @{
-                                Name = "Enclosure $($VxrHostDisk.Enclosure) Bay $($VxrHostDisk.Bay) Disk $($VxrHostDisk.Slot) Specifications - $($VxrHost.hostname)"
-                                List = $true
-                                ColumnWidths = 50, 50
-                            }
-                            if ($Report.ShowTableCaptions) {
-                                $TableParams['Caption'] = "- $($TableParams.Name)"
-                            }
-                            $VxrHostDisk | Table @TableParams
-                        }
-                    }
-                } else {
-                    $TableParams = @{
-                        Name = "Disk Specifications - $($VxrHost.hostname)"
-                        Headers = 'Encl', 'Bay', 'Slot', 'Serial Number', 'Type', 'Capacity', 'Speed', 'Status', 'Firmware'
-                        Columns = 'Enclosure', 'Bay', 'Slot', 'Serial Number', 'Disk Type', 'Capacity', 'Speed', 'Status', 'Firmware'
-                        ColumnWidths = 8, 8, 8, 20, 10, 13, 11, 11, 11
-                    }
-                    if ($Report.ShowTableCaptions) {
-                        $TableParams['Caption'] = "- $($TableParams.Name)"
-                    }
-                    $VxrHostDiskInfo | Table @TableParams
-                }
+        $SegmentInfo = foreach ($Segment in $Segments){
+            [PSCustomObject]@{
+                'Network Type' = $Segment.type
+                'Gateway' = $Segment.subnets.gateway_address
+                'Network' = $Segment.subnets.Network
+                'Transport Zone Path' = $Segment.transport_zone_path
+                #'advanced_config' = $Segment.advanced_config
+                'Admin State' = $Segment.admin_state
+                'Replication Mode' = $Segment.replication_mode   
+                'Type' = $Segment.resource_type
+                'ID' = $Segment.id
+                'Display Name' = $Segment.display_name
+                'Path' = $Segment.path
+                'Relative Path' = $Segment.relative_path
+                'Parent Path' = $Segment.parent_path
+                'Unique ID' = $Segment.unique_id
+                'Marked for Delete' = $Segment.marked_for_delete
+                'Overridden' = $Segment.overridden
+                'Create User' = $Segment._create_user
+                'Create Time' = $Segment._create_time
+                'Last Modified User' = $Segment._last_modified_user
+                'Last Modified Time' = $Segment._last_modified_time
+                'System Owned' = $Segment._system_owned
+                'Protection' = $Segment._protection
+                'Revision' = $Segment._revision
             }
-        }#>
+            #advanced_config     : @{address_pool_paths=System.Object[]; hybrid=False; inter_router=False; local_egress=False;
+            #                      urpf_mode=STRICT; connectivity=ON}
+        }
+        $TableParams = @{
+            Name = "All Segments - $($system)"
+            Headers = 'Name',         'Type', 'Network', 'Gateway', 'ID'
+            Columns = 'Display Name', 'Type', 'Network', 'Gateway', 'Unique ID'
+            ColumnWidths = 20,10,20,20,30
+        }
+        if ($Report.ShowTableCaptions) {
+            $TableParams['Caption'] = "- $($TableParams.Name)"
+        }
+        $SegmentInfo | Table @TableParams
     }
 
     end {
