@@ -28,8 +28,8 @@ function Get-AbrNsxtT0Routers {
                 #'IPv6 Profile Paths   ' = $T0Router.ipv6_profile_paths   
                 'Force Whitelisting' = $T0Router.force_whitelisting
                 'Default Rule Logging' = $T0Router.default_rule_logging
-                'resource_type' = $T0Router.resource_type
-                'ID' = $T0Router.resource_type
+                'Type' = $T0Router.resource_type
+                'ID' = $T0Router.id
                 'Display Name' = $T0Router.display_name
                 'Path' = $T0Router.path
                 'Relative Path' = $T0Router.relative_path
@@ -48,9 +48,9 @@ function Get-AbrNsxtT0Routers {
         }
         $TableParams = @{
             Name = "T0 Routers - $($system)"
-            Headers = 'Name',         'HA Mode', 'Failover Mode', 'ID'
-            Columns = 'Display Name', 'HA Mode', 'Failover Mode', 'ID'
-            ColumnWidths = 30,20,20,30
+            Headers = 'Name',         'Type', 'HA Mode', 'Failover Mode', 'ID'
+            Columns = 'Display Name', 'Type', 'HA Mode', 'Failover Mode', 'ID'
+            ColumnWidths = 20,15,20,25,20
         }
         if ($Report.ShowTableCaptions) {
             $TableParams['Caption'] = "- $($TableParams.Name)"
