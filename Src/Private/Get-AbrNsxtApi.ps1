@@ -73,7 +73,7 @@ function Get-AbrNsxtApi {
         $headers = @{
             'Authorization' = "Basic $auth"
         }
-
+        write-host $headers
         #Setup base API URLs
         $systemUrl = "https://" + $System + "/"
     }
