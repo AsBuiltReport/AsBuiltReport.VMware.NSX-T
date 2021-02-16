@@ -18,7 +18,7 @@ function Get-AbrNsxtT0Routers {
     }
 
     process {
-        $T0RouterJson = get-abrNsxtApi -version 1 -uri "/policy/api/v1/infra/tier-0s"
+        $T0RouterJson = get-abrNsxtApi -uri "/policy/api/v1/infra/tier-0s"
         $T0RouterJson
         <#f ($SegmentJson) {
             Section -Style Heading4 "Segments" {

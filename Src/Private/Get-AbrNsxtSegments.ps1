@@ -17,7 +17,7 @@ function Get-AbrNsxtSegments {
     }
 
     process {
-        $SegmentJson = get-abrNsxtApi -version 1 -uri "/policy/api/v1/infra/segments"
+        $SegmentJson = get-abrNsxtApi -uri "/policy/api/v1/infra/segments"
         $SegmentJson
         
         <#f ($SegmentJson) {
