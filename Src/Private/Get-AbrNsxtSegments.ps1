@@ -58,7 +58,7 @@ function Get-AbrNsxtSegments {
             Name = "All Segments - $($system)"
             Headers = 'Name',         'Type', 'VLAN ID', 'Network', 'Gateway', 'ID'
             Columns = 'Display Name', 'Type', 'VLAN ID', 'Network', 'Gateway', 'Unique ID'
-            ColumnWidths = 20,10,20,20,30
+            ColumnWidths = 20,9,5,18,18,30
         }
         if ($Report.ShowTableCaptions) {
             $TableParams['Caption'] = "- $($TableParams.Name)"
