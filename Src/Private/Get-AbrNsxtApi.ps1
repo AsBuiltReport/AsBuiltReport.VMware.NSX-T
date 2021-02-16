@@ -75,7 +75,7 @@ function Get-AbrNsxtApi {
         }
 
         #Setup base API URLs
-        $api_v1 = "https://" + $NsxManagerHostname + "/api/v1/"
+        $api_v1 = "https://" + $System + "/api/v1/"
     }
 
     Process {
