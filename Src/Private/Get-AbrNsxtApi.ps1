@@ -77,7 +77,7 @@ function Get-AbrNsxtApi {
         $uri = $uri.TrimStart("/")    
         $url = $systemUrl + $uri 
         Try {
-            Invoke-Restmethod -Method $method -uri $url -Headers $headers -UseBasicParsing -SkipCertificateCheck
+            Invoke-Restmethod -Method $method -uri $url -Headers $headers -UseBasicParsing
         } Catch {
             Write-Verbose -Message "Error with API reference call to $(($URI).TrimStart('/'))"
             Write-Verbose -Message $_
