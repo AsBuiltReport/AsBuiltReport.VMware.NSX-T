@@ -19,9 +19,14 @@ function Get-AbrNsxtSegments {
     process {
         $Segments= (get-abrNsxtApi -uri "/policy/api/v1/infra/segments").results
         $SegmentInfo = foreach ($Segment in $Segments){
+            If($segment.vlan_ids){
+                $vlanId = $segment.vlan_ids
+            }else{
+                $vlanId = "NA"
+            }
             [PSCustomObject]@{
                 'Network Type' = $Segment.type
-                'VLAN ID' = $segment.vlan_ids
+                'VLAN ID' = $vlanId
                 'Gateway' = $Segment.subnets.gateway_address
                 'Network' = $Segment.subnets.Network
                 'Transport Zone Path' = $Segment.transport_zone_path
