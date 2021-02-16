@@ -18,8 +18,8 @@ function Get-AbrNsxtSegments {
 
     process {
         $SegmentJson = get-abrNsxtApi -version 1 -uri "/policy/api/v1/infra/segments"
-        Write-host $SegmentJson
-        Write-host "Hello World"
+        $SegmentJson
+        
         <#f ($SegmentJson) {
             Section -Style Heading4 "Segments" {
                 $VxrHostDiskInfo = foreach ($VxrHostDisk in $VxrHostDisks) {

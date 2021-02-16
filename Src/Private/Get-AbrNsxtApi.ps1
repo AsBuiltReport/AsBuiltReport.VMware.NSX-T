@@ -14,11 +14,6 @@ function Get-AbrNsxtApi {
     [CmdletBinding()]
     param (
         [Parameter(
-            Mandatory = $true
-        )]
-        [ValidateNotNullOrEmpty()]
-        [Int] $Version,
-        [Parameter(
             Mandatory = $false
         )]
         [ValidateSet("GET")]
@@ -88,6 +83,7 @@ function Get-AbrNsxtApi {
                 $response =  Invoke-WebRequest -Method $method -uri $url -Headers $headers -UseBasicParsing
                 switch ($response.statuscode) {
                     200 {
+                        Write-host $response
                         Return $response.content
                     }
                     404 {

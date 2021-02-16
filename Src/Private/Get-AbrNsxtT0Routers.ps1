@@ -19,8 +19,7 @@ function Get-AbrNsxtT0Routers {
 
     process {
         $T0RouterJson = get-abrNsxtApi -version 1 -uri "/policy/api/v1/infra/tier-0s"
-        Write-host $T0RouterJson
-        Write-host "Hello World"
+        $T0RouterJson
         <#f ($SegmentJson) {
             Section -Style Heading4 "Segments" {
                 $VxrHostDiskInfo = foreach ($VxrHostDisk in $VxrHostDisks) {
