@@ -76,39 +76,12 @@ function Get-AbrNsxtApi {
         #clean up uri to remove leading "/"
         $uri = $uri.TrimStart("/")    
         $url = $systemUrl + $uri 
-        $NsxtApiServiceUnavailable = 1
-        $NsxtApiOverloaded = 1
-        function Invoke-ApiCall{
-            Try {
-                $response =  Invoke-Restmethod -Method $method -uri $url -Headers $headers -UseBasicParsing -SkipCertificateCheck
-                switch ($response.statuscode) {
-                    200 {
-                        Write-host $response
-                        Return $response.content
-                    }
-                    404 {
-                        Write-PscriboMessage "NSX-T API Error HTTP Code 404"
-                        Write-PscriboMessage "API Request URL: $url"
-                    }
-                    429 {
-                        Write-PscriboMessage "NSX-T API Overloaded HTTP Code 429, retry $NsxtApiOverloaded of 5"
-                        $NsxtApiOverloaded++ 
-                        start-sleep -Seconds 1
-                        Invoke-NSXTApiCall
-                    }
-                    503 {
-                        Write-PscriboMessage "NSX-T API Service Unavailable HTTP Code 503, retry $NsxtApiServiceUnavailable of 5"
-                        $NsxtApiServiceUnavailable++
-                        start-sleep -Seconds 1
-                        Invoke-NSXTApiCall
-                    }
-                }
-            } Catch {
-                Write-Verbose -Message "Error with API reference call to $(($URI).TrimStart('/'))"
-                Write-Verbose -Message $_
-            }
+        Try {
+            Invoke-Restmethod -Method $method -uri $url -Headers $headers -UseBasicParsing -SkipCertificateCheck
+        } Catch {
+            Write-Verbose -Message "Error with API reference call to $(($URI).TrimStart('/'))"
+            Write-Verbose -Message $_
         }
     }
-
     End {}
 }
