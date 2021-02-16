@@ -34,7 +34,7 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
     #region foreach loop
     foreach ($System in $Target) {
         Get-AbrNsxtSegments
-		
+		Get-AbrNsxtT0Routers
 		
 	}
 	#endregion foreach loop
