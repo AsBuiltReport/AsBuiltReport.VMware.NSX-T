@@ -33,7 +33,7 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
 	
     #region foreach loop
     foreach ($System in $Target) {
-
+        Get-AbrNsxtSegments
 		
 		
 	}
