@@ -26,12 +26,7 @@ function Get-AbrNsxtSegments {
             }else{
                 $SegmentVlanId = "Not Set"
             }
-            If($null -ne $Segment.transport_zone_path){
-                $SegmentTransportZoneID = $Segment.transport_zone_path.Split('/')[-1]
-                $SegmentTransportZoneName = (get-abrNsxtApi -uri ("/api/v1/transport-zones/" + $SegmentTransportZoneID)).display_name
-            }else {
-                $SegmentTransportZoneName = "Not Set"    
-            }
+
             If($null -ne $Segment.connectivity_path){
                 $SegmentConnectedGatewayID = $Segment.connectivity_path.Split('/')[-1]
                 $SegmentConnectedGatewayTier = $Segment.connectivity_path.Split('/')[-2]
@@ -47,7 +42,16 @@ function Get-AbrNsxtSegments {
                 'Gateway' = $Segment.subnets.gateway_address
                 'Network' = $Segment.subnets.Network
                 'Transport Zone Path' = $Segment.transport_zone_path
-                'Transport Zone Name' = $SegmentTransportZoneName
+                'Transport Zone Name' = Switch($Segment.transport_zone_path){
+                    $null {"Not Set"}
+                    $true {
+                        $SegmentTransportZoneID = $Segment.transport_zone_path.Split('/')[-1]
+                        $SegmentTransportZoneName = (get-abrNsxtApi -uri ("/api/v1/transport-zones/" + $SegmentTransportZoneID)).display_name
+                        $SegmentTransportZoneName
+                    }
+                    default{"Not Set?"}
+
+                }
                 'Connected Gateway' = $SegmentConnectedGatewayName
                 #'advanced_config' = $Segment.advanced_config
                 'Admin State' = $Segment.admin_state

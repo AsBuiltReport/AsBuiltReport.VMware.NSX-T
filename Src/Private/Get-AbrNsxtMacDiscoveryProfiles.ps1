@@ -17,83 +17,90 @@ function Get-AbrNsxtMacDiscoveryProfiles {
     }
 
     process {
-        $IpDiscoveryProfiles= (get-abrNsxtApi -uri "/policy/api/v1/global-infra/mac-discovery-profiles").results
+        $MacDiscoveryProfiles= (get-abrNsxtApi -uri "/policy/api/v1/global-infra/mac-discovery-profiles").results
         
-        $IpDiscoveryProfileInfo = foreach ($IpDiscoveryProfile in $IpDiscoveryProfiles){
-            Write-PscriboMessage $IpDiscoveryProfile.display_name
+        $MacDiscoveryProfileInfo = foreach ($MacDiscoveryProfile in $MacDiscoveryProfiles){
+            Write-PscriboMessage $MacDiscoveryProfile.display_name
             #ARP Snooping
-            If($IpDiscoveryProfile.ip_v4_discovery_options.arp_snooping_config.arp_snooping_enabled -eq "true"){
-                $IpDiscoveryProfileArpSnoopingEnabled = "Enabled"
+            If($MacDiscoveryProfile.ip_v4_discovery_options.arp_snooping_config.arp_snooping_enabled -eq "true"){
+                $MacDiscoveryProfileArpSnoopingEnabled = "Enabled"
             }else {
-                $IpDiscoveryProfileArpSnoopingEnabled = "Disabled"
+                $MacDiscoveryProfileArpSnoopingEnabled = "Disabled"
             }
             #IPv4 DHCP Snooping
-            If($IpDiscoveryProfile.ip_v4_discovery_options.dhcp_snooping_enabled -eq "true"){
-                $IpDiscoveryProfileIpv4DhcpSnoopingEnabled = "Enabled"
+            If($MacDiscoveryProfile.ip_v4_discovery_options.dhcp_snooping_enabled -eq "true"){
+                $MacDiscoveryProfileIpv4DhcpSnoopingEnabled = "Enabled"
             }else {
-                $IpDiscoveryProfileIpv4DhcpSnoopingEnabled = "Disabled"
+                $MacDiscoveryProfileIpv4DhcpSnoopingEnabled = "Disabled"
             }
             #IPv4 VMWare Tools
-            If($IpDiscoveryProfile.ip_v4_discovery_options.vmwaretools_enabled -eq "true"){
-                $IpDiscoveryProfileIpv4VmwareToolsEnabled = "Enabled"
+            If($MacDiscoveryProfile.ip_v4_discovery_options.vmwaretools_enabled -eq "true"){
+                $MacDiscoveryProfileIpv4VmwareToolsEnabled = "Enabled"
             }else {
-                $IpDiscoveryProfileIpv4VmwareToolsEnabled = "Disabled"
+                $MacDiscoveryProfileIpv4VmwareToolsEnabled = "Disabled"
             }
             #IPv6 Neighbour Discovery Snooping
-            If($IpDiscoveryProfile.ip_v6_discovery_options.nd_snooping_config.nd_snooping_enabled -eq "true"){
-                $IpDiscoveryProfileIpv6NdSnoopingEnabled = "Enabled"
+            If($MacDiscoveryProfile.ip_v6_discovery_options.nd_snooping_config.nd_snooping_enabled -eq "true"){
+                $MacDiscoveryProfileIpv6NdSnoopingEnabled = "Enabled"
             }else {
-                $IpDiscoveryProfileIpv6NdSnoopingEnabled = "Disabled"
+                $MacDiscoveryProfileIpv6NdSnoopingEnabled = "Disabled"
             }
             #IPv6 DHCP Snooping
-            If($IpDiscoveryProfile.ip_v6_discovery_options.dhcp_snooping_v6_enabled -eq "true"){
-                $IpDiscoveryProfileIpv6DhcpSnoopingEnabled = "Enabled"
+            If($MacDiscoveryProfile.ip_v6_discovery_options.dhcp_snooping_v6_enabled -eq "true"){
+                $MacDiscoveryProfileIpv6DhcpSnoopingEnabled = "Enabled"
             }else {
-                $IpDiscoveryProfileIpv6DhcpSnoopingEnabled = "Disabled"
+                $MacDiscoveryProfileIpv6DhcpSnoopingEnabled = "Disabled"
             }
             #IPv6 VMWare Tools
-            If($IpDiscoveryProfile.ip_v6_discovery_options.vmwaretools_v6_enabled -eq "true"){
-                $IpDiscoveryProfileIpv6VmwareToolsEnabled = "Enabled"
+            If($MacDiscoveryProfile.ip_v6_discovery_options.vmwaretools_v6_enabled -eq "true"){
+                $MacDiscoveryProfileIpv6VmwareToolsEnabled = "Enabled"
             }else {
-                $IpDiscoveryProfileIpv6VmwareToolsEnabled = "Disabled"
+                $MacDiscoveryProfileIpv6VmwareToolsEnabled = "Disabled"
             }
             #Trust on First Use
-            If($IpDiscoveryProfile.tofu_enabled -eq "true"){
-                $IpDiscoveryProfileTofuEnabled = "Enabled"
+            If($MacDiscoveryProfile.tofu_enabled -eq "true"){
+                $MacDiscoveryProfileTofuEnabled = "Enabled"
             }else {
-                $IpDiscoveryProfileTofuEnabled = "Disabled"
+                $MacDiscoveryProfileTofuEnabled = "Disabled"
             }
             #Duplicate IP Detection
-            If($IpDiscoveryProfile.duplicate_ip_detection.duplicate_ip_detection_enabled -eq "true"){
-                $IpDiscoveryProfileDuplicateIpDetectionEnabled = "Enabled"
+            If($MacDiscoveryProfile.duplicate_ip_detection.duplicate_ip_detection_enabled -eq "true"){
+                $MacDiscoveryProfileDuplicateIpDetectionEnabled = "Enabled"
             }else {
-                $IpDiscoveryProfileDuplicateIpDetectionEnabled = "Disabled"
+                $MacDiscoveryProfileDuplicateIpDetectionEnabled = "Disabled"
             }
             [PSCustomObject]@{
-                'Type' = $IpDiscoveryProfile.resource_type
-                'ID' = $IpDiscoveryProfile.id
-                'Display Name' = $IpDiscoveryProfile.display_name
-                'Description' = $IpDiscoveryProfile.description
-                'Path' = $IpDiscoveryProfile.path
-                'Relative Path' = $IpDiscoveryProfile.relative_path
-                'IPv4 ARP Snooping' =  $IpDiscoveryProfileArpSnoopingEnabled
-                'IPv4 ARP Bind Limit' = $IpDiscoveryProfile.ip_v4_discovery_options.arp_snooping_config.arp_binding_limit
-                'IPv4 DHCP Snooping' = $IpDiscoveryProfileIpv4DhcpSnoopingEnabled
-                'IPv4 VMware Tools' = $IpDiscoveryProfileIpv4VmwareToolsEnabled
-                'IPv6 Neighbour Discovery Snooping' = $IpDiscoveryProfileIpv6NdSnoopingEnabled
-                'IPv6 Neighbour Discovery Snooping Limit' = $IpDiscoveryProfile.ip_v6_discovery_options.nd_snooping_config.nd_snooping_limit
-                'IPv6 DHCP Snooping' = $IpDiscoveryProfileIpv6DhcpSnoopingEnabled
-                'IPv6 VMware Tools' = $IpDiscoveryProfileIpv6VmwareToolsEnabled
-                'Trust on first use' = $IpDiscoveryProfileTofuEnabled
-                'ARP ND Binding Limit Timeout' = $IpDiscoveryProfile.arp_nd_binding_timeout
-                'Duplicate IP Detection' = $IpDiscoveryProfileDuplicateIpDetectionEnabled
-                'Create User' = $IpDiscoveryProfile._create_user
-                'Create Time' = $IpDiscoveryProfile._create_time
-                'Last Modified User' = $IpDiscoveryProfile._last_modified_user
-                'Last Modified Time' = $IpDiscoveryProfile._last_modified_time
-                'System Owned' = $IpDiscoveryProfile._system_owned
-                'Protection' = $IpDiscoveryProfile._protection
-                'Revision' = $IpDiscoveryProfile._revision
+                'Type' = $MacDiscoveryProfile.resource_type
+                'ID' = $MacDiscoveryProfile.id
+                'Display Name' = $MacDiscoveryProfile.display_name
+                'Description' = $MacDiscoveryProfile.description
+                'Path' = $MacDiscoveryProfile.path
+                'Relative Path' = $MacDiscoveryProfile.relative_path
+                'IPv4 ARP Snooping' = switch($MacDiscoveryProfile.ip_v4_discovery_options.arp_snooping_config.arp_snooping_enabled){
+                    $true {"Enabled"}
+                    $false {"Disabled"}
+                    default {"Not Set"}
+                }
+                
+                
+                $MacDiscoveryProfileArpSnoopingEnabled
+                'IPv4 ARP Bind Limit' = $MacDiscoveryProfile.ip_v4_discovery_options.arp_snooping_config.arp_binding_limit
+                'IPv4 DHCP Snooping' = $MacDiscoveryProfileIpv4DhcpSnoopingEnabled
+                'IPv4 VMware Tools' = $MacDiscoveryProfileIpv4VmwareToolsEnabled
+                'IPv6 Neighbour Discovery Snooping' = $MacDiscoveryProfileIpv6NdSnoopingEnabled
+                'IPv6 Neighbour Discovery Snooping Limit' = $MacDiscoveryProfile.ip_v6_discovery_options.nd_snooping_config.nd_snooping_limit
+                'IPv6 DHCP Snooping' = $MacDiscoveryProfileIpv6DhcpSnoopingEnabled
+                'IPv6 VMware Tools' = $MacDiscoveryProfileIpv6VmwareToolsEnabled
+                'Trust on first use' = $MacDiscoveryProfileTofuEnabled
+                'ARP ND Binding Limit Timeout' = $MacDiscoveryProfile.arp_nd_binding_timeout
+                'Duplicate IP Detection' = $MacDiscoveryProfileDuplicateIpDetectionEnabled
+                'Create User' = $MacDiscoveryProfile._create_user
+                'Create Time' = $MacDiscoveryProfile._create_time
+                'Last Modified User' = $MacDiscoveryProfile._last_modified_user
+                'Last Modified Time' = $MacDiscoveryProfile._last_modified_time
+                'System Owned' = $MacDiscoveryProfile._system_owned
+                'Protection' = $MacDiscoveryProfile._protection
+                'Revision' = $MacDiscoveryProfile._revision
             }
         }
         $TableParamsSummary= @{
@@ -124,9 +131,9 @@ function Get-AbrNsxtMacDiscoveryProfiles {
             $TableParamsSummaryIPv6['Caption'] = "- $($TableParamsSummaryIPv6.Name)"
         }
         Section -Style Heading4 "MAC Discovery Profiles" {
-            $IpDiscoveryProfileInfo | Table @TableParamsSummary
-            $IpDiscoveryProfileInfo | Table @TableParamsSummaryIPv4
-            $IpDiscoveryProfileInfo | Table @TableParamsSummaryIPv6
+            $MacDiscoveryProfileInfo | Table @TableParamsSummary
+            $MacDiscoveryProfileInfo | Table @TableParamsSummaryIPv4
+            $MacDiscoveryProfileInfo | Table @TableParamsSummaryIPv6
         }
 
     }
