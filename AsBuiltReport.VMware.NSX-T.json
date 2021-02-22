@@ -17,7 +17,7 @@
         "Segments": 5,
         "SegmentProfiles": {
             "IPDiscoveryIPv4": 1,
-            "IPDiscoveryIPv6": 1
+            "IPDiscoveryIPv6": 0
         }
     },
     "HealthCheck": {}

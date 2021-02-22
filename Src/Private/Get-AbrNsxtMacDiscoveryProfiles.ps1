@@ -1,7 +1,7 @@
-function Get-AbrNsxtIpDiscoveryProfiles {
+function Get-AbrNsxtMacDiscoveryProfiles {
     <#
     .SYNOPSIS
-    Used by As Built Report to retrieve VMware NSXT IP Discovery Profile Information
+    Used by As Built Report to retrieve VMware NSXT MAC Discovery Profile Information
     .DESCRIPTION
     .NOTES
         Version:        0.1.0
@@ -13,11 +13,11 @@ function Get-AbrNsxtIpDiscoveryProfiles {
     #>
 
     begin {
-        Write-PscriboMessage "Collecting IP Discovery Profile information."
+        Write-PscriboMessage "Collecting MAC Discovery Profile information."
     }
 
     process {
-        $IpDiscoveryProfiles= (get-abrNsxtApi -uri "/policy/api/v1/global-infra/ip-discovery-profiles").results
+        $IpDiscoveryProfiles= (get-abrNsxtApi -uri "/policy/api/v1/global-infra/mac-discovery-profiles").results
         
         $IpDiscoveryProfileInfo = foreach ($IpDiscoveryProfile in $IpDiscoveryProfiles){
             Write-PscriboMessage $IpDiscoveryProfile.display_name
@@ -97,7 +97,7 @@ function Get-AbrNsxtIpDiscoveryProfiles {
             }
         }
         $TableParamsSummary= @{
-            Name = "IP Discovery Profile - General Settings - $($system)"
+            Name = "MAC Discovery Profile - General Settings - $($system)"
             Headers = 'Name', 'Description', 'Trust on first use', 'ARP ND Binding Limit Timeout', 'Duplicate IP Detection'
             Columns = 'Display Name', 'Description', 'Trust on first use', 'ARP ND Binding Limit Timeout', 'Duplicate IP Detection'
             #ColumnWidths = 29,7,16,16,16,16
@@ -106,7 +106,7 @@ function Get-AbrNsxtIpDiscoveryProfiles {
             $TableParamsSummary['Caption'] = "- $($TableParamsSummary.Name)"
         }
         $TableParamsSummaryIPv4 = @{
-            Name = "IP Discovery Profile - IPv4 Settings - $($system)"
+            Name = "MAC Discovery Profile - IPv4 Settings - $($system)"
             Headers = 'Name', 'IPv4 ARP Snooping', 'IPv4 ARP Bind Limit', 'IPv4 DHCP Snooping', 'IPv4 VMware Tools'
             Columns = 'Display Name', 'IPv4 ARP Snooping', 'IPv4 ARP Bind Limit', 'IPv4 DHCP Snooping', 'IPv4 VMware Tools'
             #ColumnWidths = 29,7,16,16,16,16
@@ -115,7 +115,7 @@ function Get-AbrNsxtIpDiscoveryProfiles {
             $TableParamsSummaryIPv4['Caption'] = "- $($TableParamsSummaryIPv4.Name)"
         }
         $TableParamsSummaryIPv6 = @{
-            Name = "IP Discovery Profile - IPv6 Settings - $($system)"
+            Name = "MAC Discovery Profile - IPv6 Settings - $($system)"
             Headers = 'Name', 'IPv6 Neighbour Discovery Snooping', 'IPv6 Neighbour Discovery Snooping Limit', 'IPv6 DHCP Snooping', 'IPv6 VMware Tools'
             Columns = 'Display Name', 'IPv6 Neighbour Discovery Snooping', 'IPv6 Neighbour Discovery Snooping Limit', 'IPv6 DHCP Snooping', 'IPv6 VMware Tools'
             #ColumnWidths = 29,7,16,16,16,16
@@ -123,7 +123,7 @@ function Get-AbrNsxtIpDiscoveryProfiles {
         if ($Report.ShowTableCaptions) {
             $TableParamsSummaryIPv6['Caption'] = "- $($TableParamsSummaryIPv6.Name)"
         }
-        Section -Style Heading4 "IP Discovery Profiles" {
+        Section -Style Heading4 "MAC Discovery Profiles" {
             $IpDiscoveryProfileInfo | Table @TableParamsSummary
             $IpDiscoveryProfileInfo | Table @TableParamsSummaryIPv4
             $IpDiscoveryProfileInfo | Table @TableParamsSummaryIPv6
