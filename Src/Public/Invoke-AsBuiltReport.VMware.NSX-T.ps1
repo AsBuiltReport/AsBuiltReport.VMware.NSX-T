@@ -38,8 +38,9 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
             Section -Style Heading2 "Segments" {
                 Get-AbrNsxtSegments
                 if ($InfoLevel.Segment -gt 3) {
-                Section -Style Heading3 "Profiles" {
-                    Get-AbrNsxtIpDiscoveryProfiles
+                    Section -Style Heading3 "Profiles" {
+                        Get-AbrNsxtIpDiscoveryProfiles
+                    }
                 }
             }
         }    

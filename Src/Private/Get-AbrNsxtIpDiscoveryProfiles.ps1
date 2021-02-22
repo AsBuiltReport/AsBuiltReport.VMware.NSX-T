@@ -123,9 +123,11 @@ function Get-AbrNsxtIpDiscoveryProfiles {
         if ($Report.ShowTableCaptions) {
             $TableParamsSummaryIPv6['Caption'] = "- $($TableParamsSummaryIPv6.Name)"
         }
-        $IpDiscoveryProfileInfo | Table @TableParamsSummary
-        $IpDiscoveryProfileInfo | Table @TableParamsSummaryIPv4
-        $IpDiscoveryProfileInfo | Table @TableParamsSummaryIPv6
+        Section -Style Heading4 "IP Discovery Profiles" {
+            $IpDiscoveryProfileInfo | Table @TableParamsSummary
+            $IpDiscoveryProfileInfo | Table @TableParamsSummaryIPv4
+            $IpDiscoveryProfileInfo | Table @TableParamsSummaryIPv6
+        }
 
     }
     end {
