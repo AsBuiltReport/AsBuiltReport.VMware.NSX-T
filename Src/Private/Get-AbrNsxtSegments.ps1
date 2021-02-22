@@ -44,13 +44,7 @@ function Get-AbrNsxtSegments {
                 'Transport Zone Path' = $Segment.transport_zone_path
                 'Transport Zone Name' = Switch($Segment.transport_zone_path.Split('/')[-1]){
                     $null {"Not Set"}
-                    $true {
-                        $SegmentTransportZoneID = $_
-                        $SegmentTransportZoneName = (get-abrNsxtApi -uri ("/api/v1/transport-zones/" + $SegmentTransportZoneID)).display_name
-                        $SegmentTransportZoneName
-                    }
-                    default{"Not Set?"}
-
+                    default {(get-abrNsxtApi -uri "/api/v1/transport-zones/$($_)").display_name}
                 }
                 'Connected Gateway' = $SegmentConnectedGatewayName
                 #'advanced_config' = $Segment.advanced_config
