@@ -18,6 +18,7 @@ function Get-AbrNsxtSegments {
 
     process {
         $Segments= (get-abrNsxtApi -uri "/policy/api/v1/infra/segments").results
+        
         $SegmentInfo = foreach ($Segment in $Segments){
             Write-PscriboMessage $Segment.display_name
             If($null -ne $segment.vlan_ids){
@@ -82,7 +83,6 @@ function Get-AbrNsxtSegments {
         }
         $SegmentInfo | Table @TableParams
     }
-
     end {
     }
 

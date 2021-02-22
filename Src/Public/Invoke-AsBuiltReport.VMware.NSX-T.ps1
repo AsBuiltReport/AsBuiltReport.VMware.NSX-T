@@ -33,7 +33,17 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
 	
     #region foreach loop
     foreach ($System in $Target) {
-        Get-AbrNsxtSegments
+        Write-PScriboMessage "Segment InfoLevel set at $($InfoLevel.Segment)."
+        if ($InfoLevel.Segment -gt 0) {
+            Section -Style Heading2 "Segments" {
+                Get-AbrNsxtSegments
+                if ($InfoLevel.Segment -gt 3) {
+                Section -Style Heading3 "Profiles" {
+                    Get-AbrNsxtIpDiscoveryProfiles
+                }
+            }
+        }    
+
 		Get-AbrNsxtT0Routers
 		
 	}
