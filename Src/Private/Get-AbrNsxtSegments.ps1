@@ -13,20 +13,23 @@ function Get-AbrNsxtSegments {
     #>
 
     begin {
-        Write-PscriboMessage "Collecting $($System) information."
+        Write-PscriboMessage "Collecting Segment information."
     }
 
     process {
         $Segments= (get-abrNsxtApi -uri "/policy/api/v1/infra/segments").results
         $SegmentInfo = foreach ($Segment in $Segments){
+            Write-PscriboMessage $Segment.display_name
             If($null -ne $segment.vlan_ids){
                 $SegmentVlanId = $segment.vlan_ids[0].tostring()
+                Write-PscriboMessage $Segment.display_name "VLAN ID" $SegmentVlanId
             }else{
                 $SegmentVlanId = "Not Set"
             }
             If($null -ne $Segment.transport_zone_path.Split('/')[-1]){
                 $SegmentTransportZoneID = $Segment.transport_zone_path.Split('/')[-1]
                 $SegmentTransportZoneName = (get-abrNsxtApi -uri "/api/v1/transport-zones/$($SegmentTransportZoneID)").results.host_switch_name
+                Write-PscriboMessage $Segment.display_name " - Transport Zone " $SegmentTransportZoneName
             }else {
                 $SegmentTransportZoneName = "Not Set"    
             }
@@ -34,6 +37,7 @@ function Get-AbrNsxtSegments {
                 $SegmentConnectedGatewayID = $Segment.connectivity_path.Split('/')[-1]
                 $SegmentConnectedGatewayTier = $Segment.connectivity_path.Split('/')[-2]
                 $SegmentConnectedGatewayName = (get-abrNsxtApi -uri "/policy/api/v1/infra/$($SegmentConnectedGatewayTier)/$($SegmentConnectedGatewayID)").results.display_name                
+                Write-PscriboMessage $Segment.display_name " - Connected Gateway Name " $SegmentConnectedGatewayName
             }else {
                 $SegmentConnectedGatewayName = "Not Set"    
             }
@@ -74,7 +78,7 @@ function Get-AbrNsxtSegments {
             Name = "All Segments - $($system)"
             Headers = 'Name', 'VLANs', 'Network', 'Gateway','Replication Mode', 'Transport Zone Name', 'Connected Gateway'
             Columns = 'Display Name', 'VLANs', 'Network', 'Gateway','Replication Mode', 'Transport Zone Name', 'Connected Gateway'
-           # ColumnWidths = 20,8,17,17
+            ColumnWidths = 20,10,20,20,15,15
         }
         if ($Report.ShowTableCaptions) {
             $TableParams['Caption'] = "- $($TableParams.Name)"
