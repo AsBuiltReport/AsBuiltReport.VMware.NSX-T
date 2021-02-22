@@ -10,7 +10,7 @@ function Get-AbrNsxtMacDiscoveryProfiles {
         Github:         richard-gray
     .EXAMPLE
     .LINK
-    #>
+   
 
     begin {
         Write-PscriboMessage "Collecting MAC Discovery Profile information."
@@ -139,6 +139,6 @@ function Get-AbrNsxtMacDiscoveryProfiles {
     }
     end {
     }
-
+ #>
 }
 
