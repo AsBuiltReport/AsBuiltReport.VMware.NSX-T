@@ -27,7 +27,7 @@ function Get-AbrNsxtSegments {
             }
             [PSCustomObject]@{
                 'Network Type' = $Segment.type
-                'VLAN ID' = $vlanId
+                'VLANs' = $vlanId
                 'Gateway' = $Segment.subnets.gateway_address
                 'Network' = $Segment.subnets.Network
                 'Transport Zone Path' = $Segment.transport_zone_path
@@ -56,9 +56,9 @@ function Get-AbrNsxtSegments {
         }
         $TableParams = @{
             Name = "All Segments - $($system)"
-            Headers = 'Name',         'Type', 'VLAN ID', 'Network', 'Gateway', 'ID'
-            Columns = 'Display Name', 'Type', 'VLAN ID', 'Network', 'Gateway', 'Unique ID'
-            ColumnWidths = 20,8,8,17,17,30
+            Headers = 'Name', 'VLANs', 'Network', 'Gateway','Replication Mode' 
+            Columns = 'Display Name', 'VLANs', 'Network', 'Gateway','Replication Mode' 
+            ColumnWidths = 20,8,17,17
         }
         if ($Report.ShowTableCaptions) {
             $TableParams['Caption'] = "- $($TableParams.Name)"
