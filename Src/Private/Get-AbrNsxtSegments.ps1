@@ -26,14 +26,14 @@ function Get-AbrNsxtSegments {
             }else{
                 $SegmentVlanId = "Not Set"
             }
-            If($null -ne $Segment.transport_zone_path.Split('/')[-1]){
+            If($null -ne $Segment.transport_zone_path){
                 $SegmentTransportZoneID = $Segment.transport_zone_path.Split('/')[-1]
                 $SegmentTransportZoneName = (get-abrNsxtApi -uri "/api/v1/transport-zones/$($SegmentTransportZoneID)").results.host_switch_name
                 Write-PscriboMessage $Segment.display_name " - Transport Zone " $SegmentTransportZoneName
             }else {
                 $SegmentTransportZoneName = "Not Set"    
             }
-            If($null -ne $Segment.connectivity_path.Split('/')[-1]){
+            If($null -ne $Segment.connectivity_path){
                 $SegmentConnectedGatewayID = $Segment.connectivity_path.Split('/')[-1]
                 $SegmentConnectedGatewayTier = $Segment.connectivity_path.Split('/')[-2]
                 $SegmentConnectedGatewayName = (get-abrNsxtApi -uri "/policy/api/v1/infra/$($SegmentConnectedGatewayTier)/$($SegmentConnectedGatewayID)").results.display_name                
