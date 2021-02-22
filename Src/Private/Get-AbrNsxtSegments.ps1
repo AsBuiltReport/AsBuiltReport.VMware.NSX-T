@@ -35,7 +35,7 @@ function Get-AbrNsxtSegments {
                 $SegmentConnectedGatewayTier = $Segment.connectivity_path.Split('/')[-2]
                 $SegmentConnectedGatewayName = (get-abrNsxtApi -uri "/policy/api/v1/infra/$($SegmentConnectedGatewayTier)/$($SegmentConnectedGatewayID)").results.display_name                
             }else {
-                $SegmentConnectedGatewayName= "Not Set"    
+                $SegmentConnectedGatewayName = "Not Set"    
             }
 
 
@@ -72,9 +72,9 @@ function Get-AbrNsxtSegments {
         }
         $TableParams = @{
             Name = "All Segments - $($system)"
-            Headers = 'Name', 'VLANs', 'Network', 'Gateway','Replication Mode' 
-            Columns = 'Display Name', 'VLANs', 'Network', 'Gateway','Replication Mode' 
-            ColumnWidths = 20,8,17,17
+            Headers = 'Name', 'VLANs', 'Network', 'Gateway','Replication Mode', 'Transport Zone Name', 'Connected Gateway'
+            Columns = 'Display Name', 'VLANs', 'Network', 'Gateway','Replication Mode', 'Transport Zone Name', 'Connected Gateway'
+           # ColumnWidths = 20,8,17,17
         }
         if ($Report.ShowTableCaptions) {
             $TableParams['Caption'] = "- $($TableParams.Name)"
