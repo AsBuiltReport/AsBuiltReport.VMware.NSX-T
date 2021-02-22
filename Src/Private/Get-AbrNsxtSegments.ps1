@@ -21,8 +21,7 @@ function Get-AbrNsxtSegments {
         $SegmentInfo = foreach ($Segment in $Segments){
             Write-PscriboMessage $Segment.display_name
             If($null -ne $segment.vlan_ids){
-                $SegmentVlanId = $segment.vlan_ids[0].tostring()
-                Write-PscriboMessage $Segment.display_name "VLAN ID" $SegmentVlanId
+                $SegmentVlanId = $segment.vlan_ids.tostring()
             }else{
                 $SegmentVlanId = "Not Set"
             }
