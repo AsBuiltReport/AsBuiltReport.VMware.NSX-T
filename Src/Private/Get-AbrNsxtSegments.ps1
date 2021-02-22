@@ -19,18 +19,34 @@ function Get-AbrNsxtSegments {
     process {
         $Segments= (get-abrNsxtApi -uri "/policy/api/v1/infra/segments").results
         $SegmentInfo = foreach ($Segment in $Segments){
-            Write-PscriboMessage $segment.display_name
             If($null -ne $segment.vlan_ids){
-                $vlanId = $segment.vlan_ids[0].tostring()
+                $SegmentVlanId = $segment.vlan_ids[0].tostring()
             }else{
-                $vlanId = "NA"
+                $SegmentVlanId = "Not Set"
             }
+            If($null -ne $Segment.transport_zone_path.Split('/')[-1]){
+                $SegmentTransportZoneID = $Segment.transport_zone_path.Split('/')[-1]
+                $SegmentTransportZoneName = (get-abrNsxtApi -uri "/api/v1/transport-zones/$($SegmentTransportZoneID)").results.host_switch_name
+            }else {
+                $SegmentTransportZoneName = "Not Set"    
+            }
+            If($null -ne $Segment.connectivity_path.Split('/')[-1]){
+                $SegmentConnectedGatewayID = $Segment.connectivity_path.Split('/')[-1]
+                $SegmentConnectedGatewayTier = $Segment.connectivity_path.Split('/')[-2]
+                $SegmentConnectedGatewayName = (get-abrNsxtApi -uri "/policy/api/v1/infra/$($SegmentConnectedGatewayTier)/$($SegmentConnectedGatewayID)").results.display_name                
+            }else {
+                $SegmentConnectedGatewayName= "Not Set"    
+            }
+
+
             [PSCustomObject]@{
                 'Network Type' = $Segment.type
-                'VLANs' = $vlanId
+                'VLANs' = $SegmentVlanId
                 'Gateway' = $Segment.subnets.gateway_address
                 'Network' = $Segment.subnets.Network
                 'Transport Zone Path' = $Segment.transport_zone_path
+                'Transport Zone Name' = $SegmentTransportZoneName
+                'Connected Gateway' = $SegmentConnectedGatewayName
                 #'advanced_config' = $Segment.advanced_config
                 'Admin State' = $Segment.admin_state
                 'Replication Mode' = $Segment.replication_mode   
