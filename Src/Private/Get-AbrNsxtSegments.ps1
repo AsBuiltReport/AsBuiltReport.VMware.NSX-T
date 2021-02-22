@@ -21,7 +21,7 @@ function Get-AbrNsxtSegments {
         $SegmentInfo = foreach ($Segment in $Segments){
             Write-PscriboMessage $Segment.display_name
             If($null -ne $segment.vlan_ids){
-                $SegmentVlanId = $segment.vlan_ids.tostring()
+                $SegmentVlanId = $segment.vlan_ids
             }else{
                 $SegmentVlanId = "Not Set"
             }
@@ -73,8 +73,8 @@ function Get-AbrNsxtSegments {
         }
         $TableParams = @{
             Name = "All Segments - $($system)"
-            Headers = 'Name', 'VLANs', 'Network', 'Gateway','Replication Mode', 'Transport Zone Name', 'Connected Gateway'
-            Columns = 'Display Name', 'VLANs', 'Network', 'Gateway','Replication Mode', 'Transport Zone Name', 'Connected Gateway'
+            Headers = 'Name', 'VLANs', 'Network', 'Gateway', 'Transport Zone Name', 'Connected Gateway'
+            Columns = 'Display Name', 'VLANs', 'Network', 'Gateway', 'Transport Zone Name', 'Connected Gateway'
             ColumnWidths = 20,10,20,20,10,10,10
         }
         if ($Report.ShowTableCaptions) {
