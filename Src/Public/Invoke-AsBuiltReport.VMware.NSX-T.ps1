@@ -36,19 +36,19 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
         Write-PScriboMessage "Segment InfoLevel set at $($InfoLevel.Segment)."
         if ($InfoLevel.Segments -gt 0) {
             Section -Style Heading2 "Segments" {
-                Get-AbrNsxtSegments <#
+                Get-AbrNsxtSegments 
                 if ($InfoLevel.Segments -gt 3) {
                     Section -Style Heading3 "Profiles" {
                         Get-AbrNsxtIpDiscoveryProfiles
                     }
-                }#>
+                }
             }
         }    
-        #if ($InfoLevel.T0Routers -gt 0) {
+        if ($InfoLevel.T0Routers -gt 0) {
             Section -Style Heading2 "Tier 0 Routers" {
                 Get-AbrNsxtT0Routers
             }
-        #}
+        }
 		
 		
 	}
