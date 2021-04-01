@@ -44,8 +44,12 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
                 }#>
             }
         }    
-
-		Get-AbrNsxtT0Routers
+        if ($InfoLevel.T0Routers -gt 0) {
+            Section -Style Heading2 "Tier 0 Routers" {
+                Get-AbrNsxtT0Routers
+            }
+        }
+		
 		
 	}
 	#endregion foreach loop
