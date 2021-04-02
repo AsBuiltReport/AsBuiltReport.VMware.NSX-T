@@ -53,7 +53,10 @@ function Get-AbrNsxtT1Routers {
                     'Route Advertisement Types' = $T1Router.route_advertisement_types
                     'Tags' = $T1Router.tags
                     'tier0_path' = $T1Router.tier0_path
-                    'Connected T0' = (get-abrNsxtApi -uri ("/policy/api/v1"+$T1Router.tier0_path)).display_name
+                    'Connected T0' = switch((get-abrNsxtApi -uri ("/policy/api/v1"+$T1Router.tier0_path)).display_name){
+                        $null {"Not Set"}
+                        default {$_}    
+                    }
                     #'IPv6 Profile Paths   ' = $T1Router.ipv6_profile_paths   
                     'Force Whitelisting' = $T1Router.force_whitelisting
                     'Default Rule Logging' = $T1Router.default_rule_logging
