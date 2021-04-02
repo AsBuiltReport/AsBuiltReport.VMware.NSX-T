@@ -35,6 +35,16 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
     #region foreach loop
     foreach ($System in $Target) {
         Write-PScriboMessage "Segment InfoLevel set at $($InfoLevel.Segment)."
+        if ($InfoLevel.T0Routers -gt 0) {
+            Section -Style Heading2 "Tier 0 Routers" {
+                Get-AbrNsxtT0Routers
+            }
+        }
+        if ($InfoLevel.T1Routers -gt 0) {
+            Section -Style Heading2 "Tier 1 Routers" {
+                Get-AbrNsxtT1Routers
+            }
+        }
         if ($InfoLevel.Segments -gt 0) {
             Section -Style Heading2 "Segments" {
                 Get-AbrNsxtSegments 
@@ -48,14 +58,7 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
                     }
                 }
             }
-        }    
-        if ($InfoLevel.T0Routers -gt 0) {
-            Section -Style Heading2 "Tier 0 Routers" {
-                Get-AbrNsxtT0Routers
-            }
-        }
-		
-		
+        }   
 	}
 	#endregion foreach loop
 }

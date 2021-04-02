@@ -22,7 +22,7 @@ function Get-AbrNsxtSpoofGuardProfiles {
             $SpoofGuardProfileInfo = foreach ($SpoofGuardProfile in $SpoofGuardProfiles.results){
                 Write-PscriboMessage $SpoofGuardProfile.display_name
                 [PSCustomObject]@{
-                    'Address Binding Whitelist' = switch($SpoofGuardProfile.address_binding_whitelist){
+                    'Port Binding' = switch($SpoofGuardProfile.address_binding_whitelist){
                         $true {"Enabled"}
                         $false {"Disabled"}
                         default {"Not Set"}    
@@ -44,8 +44,8 @@ function Get-AbrNsxtSpoofGuardProfiles {
             }
             $TableParamsSummary= @{
                 Name = "Spoof Guard Profiles - $($system)"
-                Headers = 'Name'        , 'Address Binding Whitelist'
-                Columns = 'Display Name', 'Address Binding Whitelist'
+                Headers = 'Name'        , 'Port Binding'
+                Columns = 'Display Name', 'Port Binding'
                 #ColumnWidths = 29,7,16,16,16,16
             }
             if ($Report.ShowTableCaptions) {
