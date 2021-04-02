@@ -22,7 +22,11 @@ function Get-AbrNsxtSpoofGuardProfiles {
             $SpoofGuardProfileInfo = foreach ($SpoofGuardProfile in $SpoofGuardProfiles.results){
                 Write-PscriboMessage $SpoofGuardProfile.display_name
                 [PSCustomObject]@{
-                    'Address Binding Whitelist' = $SpoofGuardProfile.address_binding_whitelist                                          
+                    'Address Binding Whitelist' = switch($SpoofGuardProfile.address_binding_whitelist){
+                        $true {"Enabled"}
+                        $false {"Disabled"}
+                        default {"Not Set"}    
+                    }
                     'Type' = $SpoofGuardProfile.resource_type
                     'ID' = $SpoofGuardProfile.id
                     'Display Name' = $SpoofGuardProfile.display_name
