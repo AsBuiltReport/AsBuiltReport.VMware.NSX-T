@@ -54,6 +54,16 @@ function Get-AbrNsxtT1Routers {
                         default {$_}
                     } 
                     'Route Advertisement Types' = switch($T1Router.route_advertisement_types){
+                        <#
+                        Work out how to rewrite values here, current output like:
+                            TIER1_LB_VIP
+                            TIER1_STATIC_ROUTES
+                            TIER1_LB_SNAT
+                            TIER1_NAT
+                            TIER1_DNS_FORWARDER_IP
+                            TIER1_CONNECTED
+                            TIER1_IPSEC_LOCAL_ENDPOINT
+                        #>
                         $null {"Not Set"}
                         default {$_}
                     } 
