@@ -45,6 +45,12 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
             }
         }    
         Write-PscriboMessage [string]$($InfoLevel.T0Routers)
+        if ($null -eq $InfoLevel.T0Routers) {
+            Write-PscriboMessage "Null"
+        }else{
+            Write-PscriboMessage "Not Null"
+        }
+
         if ($InfoLevel.T0Routers -gt 0) {
             Section -Style Heading2 "Tier 0 Routers" {
                 Get-AbrNsxtT0Routers
