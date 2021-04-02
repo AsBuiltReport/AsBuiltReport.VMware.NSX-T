@@ -17,7 +17,7 @@ function Get-AbrNsxtIpDiscoveryProfiles {
     }
 
     process {
-        $IpDiscoveryProfiles= (get-abrNsxtApi -uri "/policy/api/v1/global-infra/ip-discovery-profiles/").results
+        $IpDiscoveryProfiles= (get-abrNsxtApi -uri "/policy/api/v1/infra/ip-discovery-profiles").results
         
         $IpDiscoveryProfileInfo = foreach ($IpDiscoveryProfile in $IpDiscoveryProfiles){
             Write-PscriboMessage $IpDiscoveryProfile.display_name
