@@ -125,8 +125,12 @@ function Get-AbrNsxtIpDiscoveryProfiles {
         }
         Section -Style Heading4 "IP Discovery Profiles" {
             $IpDiscoveryProfileInfo | Table @TableParamsSummary
-            $IpDiscoveryProfileInfo | Table @TableParamsSummaryIPv4
-            $IpDiscoveryProfileInfo | Table @TableParamsSummaryIPv6
+            if ($InfoLevel.SegmentProfiles.IPDiscoveryIPv4 -gt 0) {
+                $IpDiscoveryProfileInfo | Table @TableParamsSummaryIPv4
+            }
+            if ($InfoLevel.SegmentProfiles.IPDiscoveryIPv6 -gt 0) {
+                $IpDiscoveryProfileInfo | Table @TableParamsSummaryIPv6
+            }
         }
 
     }
