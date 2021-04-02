@@ -55,7 +55,7 @@ function Get-AbrNsxtT0Routers {
                 Name = "T0 Routers - $($system)"
                 Headers = 'Name',         'Type', 'HA Mode', 'Failover Mode', 'ID',        'Transit Subnets'
                 Columns = 'Display Name', 'Type', 'HA Mode', 'Failover Mode', 'Unique ID', 'Transit Subnets'
-                ColumnWidths = 20,10,20,20,30
+                #ColumnWidths = 20,10,20,20,30
             }
             if ($Report.ShowTableCaptions) {
                 $TableParams['Caption'] = "- $($TableParams.Name)"
