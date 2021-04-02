@@ -1,7 +1,7 @@
 function Get-AbrNsxtSegments {
     <#
     .SYNOPSIS
-    Used by As Built Report to retrieve VMware NSXT Segment Information
+        Used by As Built Report to retrieve VMware NSXT Segment Information
     .DESCRIPTION
     .NOTES
         Version:        0.1.0

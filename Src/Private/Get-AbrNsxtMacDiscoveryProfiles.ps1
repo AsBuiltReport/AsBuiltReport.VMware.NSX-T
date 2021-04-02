@@ -1,4 +1,5 @@
 function Get-AbrNsxtMacDiscoveryProfiles {
+    <#
     .SYNOPSIS
     Used by As Built Report to retrieve VMware NSXT MAC Discovery Profile Information
     .DESCRIPTION
@@ -9,7 +10,7 @@ function Get-AbrNsxtMacDiscoveryProfiles {
         Github:         richard-gray
     .EXAMPLE
     .LINK
-   
+    #>
 
     begin {
         Write-PscriboMessage "Collecting MAC Discovery Profile information."
