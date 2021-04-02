@@ -49,8 +49,14 @@ function Get-AbrNsxtT1Routers {
                         $null {"Not Set"}
                         default {$_}
                     }
-                    'Route Advertisement Rules' = $T1Router.route_advertisement_rules #more work required not sure how to display? new table or rules?
-                    'Route Advertisement Types' = $T1Router.route_advertisement_types
+                    'Route Advertisement Rules' = switch($T1Router.route_advertisement_rules){#more work required not sure how to display? new table or rules?
+                        $null {"Not Set"}
+                        default {$_}
+                    } 
+                    'Route Advertisement Types' = switch($T1Router.route_advertisement_types){
+                        $null {"Not Set"}
+                        default {$_}
+                    } 
                     'Tags' = $T1Router.tags
                     'tier0_path' = $T1Router.tier0_path
                     'Connected T0' = switch((get-abrNsxtApi -uri ("/policy/api/v1"+$T1Router.tier0_path)).display_name){
