@@ -18,94 +18,102 @@ function Get-AbrNsxtT0Routers {
     }
 
     process {
-        $T0Routers = (get-abrNsxtApi -uri "/policy/api/v1/infra/tier-0s").results
-        $T0RouterInfo = foreach ($T0Router in $T0Routers){
-            [PSCustomObject]@{
-                'Transit Subnets' = $T0Router.transit_subnets
-                'Internal Transit Subnets' = $T0Router.internal_transit_subnets
-                'HA Mode' = $T0Router.ha_mode
-                'Failover Mode' = $T0Router.failover_mode
-                #'IPv6 Profile Paths   ' = $T0Router.ipv6_profile_paths   
-                'Force Whitelisting' = $T0Router.force_whitelisting
-                'Default Rule Logging' = $T0Router.default_rule_logging
-                'Type' = $T0Router.resource_type
-                'ID' = $T0Router.id
-                'Display Name' = $T0Router.display_name
-                'Path' = $T0Router.path
-                'Relative Path' = $T0Router.relative_path
-                'Parent Path' = $T0Router.parent_path
-                'Unique ID' = $T0Router.unique_id
-                'Marked for Delete' = $T0Router.marked_for_delete
-                'Overridden' = $T0Router.overridden
-                'Create User' = $T0Router._create_user
-                'Create Time' = $T0Router._create_time
-                'Last Modified User' = $T0Router._last_modified_user
-                'Last Modified Time' = $T0Router._last_modified_time
-                'System Owned' = $T0Router._system_owned
-                'Protection' = $T0Router._protection
-                'Revision' = $T0Router._revision
-            }
-        }
-        $TableParams = @{
-            Name = "T0 Routers - $($system)"
-            Headers = 'Name',         'Type', 'HA Mode', 'Failover Mode', 'ID'
-            Columns = 'Display Name', 'Type', 'HA Mode', 'Failover Mode', 'Unique ID'
-            ColumnWidths = 20,10,20,20,30
-        }
-        if ($Report.ShowTableCaptions) {
-            $TableParams['Caption'] = "- $($TableParams.Name)"
-        }
-        $T0RouterInfo | Table @TableParams
-
-         
-        <#f ($SegmentJson) {
-            Section -Style Heading4 "Segments" {
-                $T0RouterInfo = foreach ($T0Router in $T0Routers) {
-                    [PSCustomObject]@{
-                        'Enclosure' = $T0Router.Enclosure
-                        'internal_transit_subnets' = $T0Router.internal_transit_subnets
-                        'Slot' = $T0Router.Slot
-                        'Serial Number' = $T0Router.sn
-                        'Manufacturer' = $T0Router.manufacturer
-                        'Model' = $T0Router.model
-                        'Firmware' = $T0Router.firmware_revision
-                        'Disk Type' = $T0Router.disk_type
-                        'Capacity' = $T0Router.capacity
-                        'Speed' = $T0Router.max_capable_speed
-                        'Status' = $T0Router.disk_state
+        $T0Routers = get-abrNsxtApi -uri "/policy/api/v1/infra/tier-0s"
+        if($T0Routers.result_count -ge 1){
+            $T0RouterInfo = foreach ($T0Router in $T0Routers.results){
+                [PSCustomObject]@{
+                    'Transit Subnets' = $T0Router.transit_subnets
+                    'Internal Transit Subnets' = $T0Router.internal_transit_subnets
+                    'HA Mode' = switch($T0Router.ha_mode){
+                        "ACTIVE_ACTIVE" {"Active/Active"}
+                        "ACTIVE_STANDBY" {"Active/Standby"}
+                        default {"Unkown"}
                     }
+                    'Failover Mode' = $T0Router.failover_mode
+                    #'IPv6 Profile Paths   ' = $T0Router.ipv6_profile_paths   
+                    'Force Whitelisting' = $T0Router.force_whitelisting
+                    'Default Rule Logging' = $T0Router.default_rule_logging
+                    'Type' = $T0Router.resource_type
+                    'ID' = $T0Router.id
+                    'Display Name' = $T0Router.display_name
+                    'Path' = $T0Router.path
+                    'Relative Path' = $T0Router.relative_path
+                    'Parent Path' = $T0Router.parent_path
+                    'Unique ID' = $T0Router.unique_id
+                    'Marked for Delete' = $T0Router.marked_for_delete
+                    'Overridden' = $T0Router.overridden
+                    'Create User' = $T0Router._create_user
+                    'Create Time' = $T0Router._create_time
+                    'Last Modified User' = $T0Router._last_modified_user
+                    'Last Modified Time' = $T0Router._last_modified_time
+                    'System Owned' = $T0Router._system_owned
+                    'Protection' = $T0Router._protection
+                    'Revision' = $T0Router._revision
                 }
-                if ($Healthcheck.Appliance.DiskStatus) {
-                    $T0RouterInfo | Where-Object { $_.'Status' -ne 'OK' } | Set-Style -Style Critical -Property 'Status'
-                }
-                if ($InfoLevel.Appliance -ge 2) {
-                    foreach ($T0Router in $T0RouterInfo) {
-                        Section -Style Heading5 "Enclosure $($T0Router.Enclosure) internal_transit_subnets $($T0Router.internal_transit_subnets) Disk $($T0Router.Slot)" {
-                            $TableParams = @{
-                                Name = "Enclosure $($T0Router.Enclosure) internal_transit_subnets $($T0Router.internal_transit_subnets) Disk $($T0Router.Slot) Specifications - $($VxrHost.hostname)"
-                                List = $true
-                                ColumnWidths = 50, 50
-                            }
-                            if ($Report.ShowTableCaptions) {
-                                $TableParams['Caption'] = "- $($TableParams.Name)"
-                            }
-                            $T0Router | Table @TableParams
+            }
+            $TableParams = @{
+                Name = "T0 Routers - $($system)"
+                Headers = 'Name',         'Type', 'HA Mode', 'Failover Mode', 'ID',        'Transit Subnets'
+                Columns = 'Display Name', 'Type', 'HA Mode', 'Failover Mode', 'Unique ID', 'Transit Subnets'
+                ColumnWidths = 20,10,20,20,30
+            }
+            if ($Report.ShowTableCaptions) {
+                $TableParams['Caption'] = "- $($TableParams.Name)"
+            }
+            $T0RouterInfo | Table @TableParams
+
+            
+            <#f ($SegmentJson) {
+                Section -Style Heading4 "Segments" {
+                    $T0RouterInfo = foreach ($T0Router in $T0Routers) {
+                        [PSCustomObject]@{
+                            'Enclosure' = $T0Router.Enclosure
+                            'internal_transit_subnets' = $T0Router.internal_transit_subnets
+                            'Slot' = $T0Router.Slot
+                            'Serial Number' = $T0Router.sn
+                            'Manufacturer' = $T0Router.manufacturer
+                            'Model' = $T0Router.model
+                            'Firmware' = $T0Router.firmware_revision
+                            'Disk Type' = $T0Router.disk_type
+                            'Capacity' = $T0Router.capacity
+                            'Speed' = $T0Router.max_capable_speed
+                            'Status' = $T0Router.disk_state
                         }
                     }
-                } else {
-                    $TableParams = @{
-                        Name = "Disk Specifications - $($VxrHost.hostname)"
-                        Headers = 'Encl', 'internal_transit_subnets', 'Slot', 'Serial Number', 'Type', 'Capacity', 'Speed', 'Status', 'Firmware'
-                        Columns = 'Enclosure', 'internal_transit_subnets', 'Slot', 'Serial Number', 'Disk Type', 'Capacity', 'Speed', 'Status', 'Firmware'
-                        ColumnWidths = 8, 8, 8, 20, 10, 13, 11, 11, 11
+                    if ($Healthcheck.Appliance.DiskStatus) {
+                        $T0RouterInfo | Where-Object { $_.'Status' -ne 'OK' } | Set-Style -Style Critical -Property 'Status'
                     }
-                    if ($Report.ShowTableCaptions) {
-                        $TableParams['Caption'] = "- $($TableParams.Name)"
+                    if ($InfoLevel.Appliance -ge 2) {
+                        foreach ($T0Router in $T0RouterInfo) {
+                            Section -Style Heading5 "Enclosure $($T0Router.Enclosure) internal_transit_subnets $($T0Router.internal_transit_subnets) Disk $($T0Router.Slot)" {
+                                $TableParams = @{
+                                    Name = "Enclosure $($T0Router.Enclosure) internal_transit_subnets $($T0Router.internal_transit_subnets) Disk $($T0Router.Slot) Specifications - $($VxrHost.hostname)"
+                                    List = $true
+                                    ColumnWidths = 50, 50
+                                }
+                                if ($Report.ShowTableCaptions) {
+                                    $TableParams['Caption'] = "- $($TableParams.Name)"
+                                }
+                                $T0Router | Table @TableParams
+                            }
+                        }
+                    } else {
+                        $TableParams = @{
+                            Name = "Disk Specifications - $($VxrHost.hostname)"
+                            Headers = 'Encl', 'internal_transit_subnets', 'Slot', 'Serial Number', 'Type', 'Capacity', 'Speed', 'Status', 'Firmware'
+                            Columns = 'Enclosure', 'internal_transit_subnets', 'Slot', 'Serial Number', 'Disk Type', 'Capacity', 'Speed', 'Status', 'Firmware'
+                            ColumnWidths = 8, 8, 8, 20, 10, 13, 11, 11, 11
+                        }
+                        if ($Report.ShowTableCaptions) {
+                            $TableParams['Caption'] = "- $($TableParams.Name)"
+                        }
+                        $T0RouterInfo | Table @TableParams
                     }
-                    $T0RouterInfo | Table @TableParams
                 }
-            }
-        }#>
+            }#>
+        }else{
+            Paragraph 'No Tier 0 Routers Configured'
+        }
     }
 
     end {
