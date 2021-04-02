@@ -45,7 +45,10 @@ function Get-AbrNsxtT1Routers {
                         'LB_XLARGE' {"Extra Large"}
                         default {"Routing"}  
                     }
-                    'Gateway QoS Profile' = $T1Router.qos_profile
+                    'Gateway QoS Profile' = switch($T1Router.qos_profile){
+                        $null {"Not Set"}
+                        default {$_}
+                    }
                     'Route Advertisement Rules' = $T1Router.route_advertisement_rules #more work required not sure how to display? new table or rules?
                     'Route Advertisement Types' = $T1Router.route_advertisement_types
                     'Tags' = $T1Router.tags
