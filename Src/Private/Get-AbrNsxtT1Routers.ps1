@@ -22,14 +22,35 @@ function Get-AbrNsxtT1Routers {
         if($T1Routers.result_count -ge 1){
             $T1RouterInfo = foreach ($T1Router in $T1Routers.results){
                 [PSCustomObject]@{
-                    'Transit Subnets' = $T1Router.transit_subnets
-                    'Internal Transit Subnets' = $T1Router.internal_transit_subnets
-                    'HA Mode' = switch($T1Router.ha_mode){
-                        "ACTIVE_ACTIVE" {"Active/Active"}
-                        "ACTIVE_STANDBY" {"Active/Standby"}
-                        default {"Unkown"}
+                    'Firewall' = switch($T1Router.disable_firewall){
+                        $true {"Disabled"}
+                        $false {"Enabled"}
+                        default {"Enabled"}   
                     }
-                    'Failover Mode' = $T1Router.failover_mode
+                    'Standby Relocation' = switch($T1Router.enable_standby_relocation){
+                        $true {"Enabled"}
+                        $false {"Disabled"}
+                        default {"Disabled"}   
+                    }
+                    'Failover Mode' = switch($T1Router.failover_mode){
+                        "PREEMPTIVE" {"Preemptive"}
+                        "NON_PREEMPTIVE" {"Non Preemptive"}
+                        default {"Non Preemptive"}   
+                    }
+                    'Pool Allocation' = switch($T1Router.failover_mode){
+                        'ROUTING' {"Routing"}
+                        'LB_SMALL' {"Small"}
+                        'LB_MEDIUM' {"Medium"}
+                        'LB_LARGE' {"Large"}
+                        'LB_XLARGE' {"Extra Large"}
+                        default {"Routing"}  
+                    }
+                    'Gateway QoS Profile' = $T1Router.qos_profile
+                    'Route Advertisement Rules' = $T1Router.route_advertisement_rules #more work required not sure how to display? new table or rules?
+                    'Route Advertisement Types' = $T1Router.route_advertisement_types
+                    'Tags' = $T1Router.tags
+                    'tier0_path' = $T1Router.tier0_path
+                    'Connected T0' = (get-abrNsxtApi -uri "/policy/api/v1"+$T1Router.tier0_path).display_name
                     #'IPv6 Profile Paths   ' = $T1Router.ipv6_profile_paths   
                     'Force Whitelisting' = $T1Router.force_whitelisting
                     'Default Rule Logging' = $T1Router.default_rule_logging
