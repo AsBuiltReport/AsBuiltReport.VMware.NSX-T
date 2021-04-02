@@ -44,7 +44,7 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
                 }
             }
         }    
-        Write-PscriboMessage [string]$($InfoLevel.T0Routers)
+        Write-PscriboMessage $ReportConfig
         if ($null -eq $InfoLevel.T0Routers) {
             Write-PscriboMessage "Null"
         }else{
