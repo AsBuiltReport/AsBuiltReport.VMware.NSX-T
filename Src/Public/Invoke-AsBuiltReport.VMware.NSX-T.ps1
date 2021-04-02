@@ -26,6 +26,7 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
     $InfoLevel = $ReportConfig.InfoLevel
     $Options = $ReportConfig.Options
 
+
     # Used to set values to TitleCase where required
     $TextInfo = (Get-Culture).TextInfo
 
@@ -44,13 +45,6 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
                 }
             }
         }    
-        Write-PscriboMessage $ReportConfig
-        if ($null -eq $InfoLevel.T0Routers) {
-            Write-PscriboMessage "Null"
-        }else{
-            Write-PscriboMessage "Not Null"
-        }
-
         if ($InfoLevel.T0Routers -gt 0) {
             Section -Style Heading2 "Tier 0 Routers" {
                 Get-AbrNsxtT0Routers
