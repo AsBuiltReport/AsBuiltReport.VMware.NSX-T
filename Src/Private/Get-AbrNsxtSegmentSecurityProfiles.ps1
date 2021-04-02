@@ -92,7 +92,7 @@ function Get-AbrNsxtSegmentSecurityProfiles {
                 $TableParamsSummary['Caption'] = "- $($TableParamsSummary.Name)"
             }
             Section -Style Heading4 "Segment Security Profiles" {
-                if ($InfoLevel.SegmentProfiles.Qos -gt 0) {
+                if ($InfoLevel.SegmentProfiles.Security -gt 0) {
                     $SegmentSecurityProfileInfo | Table @TableParamsSummary
                 }
             }

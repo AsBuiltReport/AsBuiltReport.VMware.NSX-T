@@ -44,6 +44,7 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
                         Get-AbrNsxtMacDiscoveryProfiles
                         Get-AbrNsxtQosProfiles
                         Get-AbrNsxtSegmentSecurityProfiles
+                        Get-AbrNsxtSpoofGuardProfiles
                     }
                 }
             }
