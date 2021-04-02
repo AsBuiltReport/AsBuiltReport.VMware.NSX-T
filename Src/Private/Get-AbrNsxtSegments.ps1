@@ -18,15 +18,15 @@ function Get-AbrNsxtSegments {
 
     process {
         $Segments= (get-abrNsxtApi -uri "/policy/api/v1/infra/segments").results
-        
         $SegmentInfo = foreach ($Segment in $Segments){
             Write-PscriboMessage $Segment.display_name
+            # Check if VLAN ID is set
             If($null -ne $segment.vlan_ids){
                 $SegmentVlanId = $segment.vlan_ids
             }else{
                 $SegmentVlanId = "Not Set"
             }
-
+            # Expand Connectivity Path to find connected Gateway
             If($null -ne $Segment.connectivity_path){
                 $SegmentConnectedGatewayID = $Segment.connectivity_path.Split('/')[-1]
                 $SegmentConnectedGatewayTier = $Segment.connectivity_path.Split('/')[-2]
@@ -34,8 +34,6 @@ function Get-AbrNsxtSegments {
             }else {
                 $SegmentConnectedGatewayName = "Not Set"    
             }
-            #(get-abrNsxtApi -uri "/api/v1/transport-zones/$($_)").display_name
-
             [PSCustomObject]@{
                 'Network Type' = $Segment.type
                 'VLANs' = $SegmentVlanId
@@ -82,6 +80,7 @@ function Get-AbrNsxtSegments {
         }
         $SegmentInfo | Table @TableParams
     }
+    
     end {
     }
 

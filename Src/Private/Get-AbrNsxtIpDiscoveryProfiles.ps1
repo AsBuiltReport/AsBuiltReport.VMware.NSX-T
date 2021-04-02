@@ -18,7 +18,6 @@ function Get-AbrNsxtIpDiscoveryProfiles {
 
     process {
         $IpDiscoveryProfiles= (get-abrNsxtApi -uri "/policy/api/v1/infra/ip-discovery-profiles").results
-        
         $IpDiscoveryProfileInfo = foreach ($IpDiscoveryProfile in $IpDiscoveryProfiles){
             Write-PscriboMessage $IpDiscoveryProfile.display_name
             [PSCustomObject]@{
@@ -118,8 +117,8 @@ function Get-AbrNsxtIpDiscoveryProfiles {
         }
 
     }
+    
     end {
     }
-
 }
 

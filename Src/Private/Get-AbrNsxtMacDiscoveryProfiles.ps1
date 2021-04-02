@@ -18,7 +18,6 @@ function Get-AbrNsxtMacDiscoveryProfiles {
 
     process {
         $MacDiscoveryProfiles= (get-abrNsxtApi -uri "/policy/api/v1/infra/mac-discovery-profiles").results
-        
         $MacDiscoveryProfileInfo = foreach ($MacDiscoveryProfile in $MacDiscoveryProfiles){
             Write-PscriboMessage $MacDiscoveryProfile.display_name
             [PSCustomObject]@{
@@ -82,6 +81,7 @@ function Get-AbrNsxtMacDiscoveryProfiles {
         }
 
     }
+    
     end {
     }
 }
