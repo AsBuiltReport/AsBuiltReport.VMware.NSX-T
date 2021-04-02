@@ -86,8 +86,8 @@ function Get-AbrNsxtT1Routers {
             }
             $TableParams = @{
                 Name = "T1 Routers - $($system)"
-                Headers = 'Name',         'Firewall', 'Standby Relocation', 'Failover Mode', 'Pool Allocation', 'Gateway QoS Profile', 'Route Advertisement Rules', 'Route Advertisement Types', 'Connected T0'
-                Columns = 'Display Name', 'Firewall', 'Standby Relocation', 'Failover Mode', 'Pool Allocation', 'Gateway QoS Profile', 'Route Advertisement Rules', 'Route Advertisement Types', 'Connected T0'
+                Headers = 'Name',         'Firewall', 'Standby Relocation', 'Failover Mode', 'Pool Allocation', 'Gateway QoS Profile', 'Route Advertisement Types', 'Connected T0'
+                Columns = 'Display Name', 'Firewall', 'Standby Relocation', 'Failover Mode', 'Pool Allocation', 'Gateway QoS Profile', 'Route Advertisement Types', 'Connected T0'
                 #ColumnWidths = 20,10,20,20,30
             }
             if ($Report.ShowTableCaptions) {
