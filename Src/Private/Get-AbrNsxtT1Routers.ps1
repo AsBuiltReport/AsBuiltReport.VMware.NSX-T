@@ -74,8 +74,8 @@ function Get-AbrNsxtT1Routers {
             }
             $TableParams = @{
                 Name = "T1 Routers - $($system)"
-                Headers = 'Name',         'Type', 'HA Mode', 'Failover Mode', 'ID',        'Transit Subnets'
-                Columns = 'Display Name', 'Type', 'HA Mode', 'Failover Mode', 'Unique ID', 'Transit Subnets'
+                Headers = 'Name'  
+                Columns = 'Display Name'
                 #ColumnWidths = 20,10,20,20,30
             }
             if ($Report.ShowTableCaptions) {
