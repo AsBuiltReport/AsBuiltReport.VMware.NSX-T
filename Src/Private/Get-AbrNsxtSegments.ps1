@@ -20,30 +20,24 @@ function Get-AbrNsxtSegments {
         $Segments= (get-abrNsxtApi -uri "/policy/api/v1/infra/segments").results
         $SegmentInfo = foreach ($Segment in $Segments){
             Write-PscriboMessage $Segment.display_name
-            # Check if VLAN ID is set
-            If($null -ne $segment.vlan_ids){
-                $SegmentVlanId = $segment.vlan_ids
-            }else{
-                $SegmentVlanId = "Not Set"
-            }
             # Expand Connectivity Path to find connected Gateway
             If($null -ne $Segment.connectivity_path){
                 $SegmentConnectedGatewayID = $Segment.connectivity_path.Split('/')[-1]
                 $SegmentConnectedGatewayTier = $Segment.connectivity_path.Split('/')[-2]
                 $SegmentConnectedGatewayName = (get-abrNsxtApi -uri "/policy/api/v1/infra/$($SegmentConnectedGatewayTier)/$($SegmentConnectedGatewayID)").display_name                
             }else {
-                $SegmentConnectedGatewayName = "Not Set"    
+                $SegmentConnectedGatewayName = "Not Connected"    
             }
             [PSCustomObject]@{
                 'Network Type' = $Segment.type
-                'VLANs' = $SegmentVlanId
+                'VLANs' = switch($segment.vlan_ids){
+                    $null {"None"}
+                    default {$_}
+                }
                 'Gateway' = $Segment.subnets.gateway_address
                 'Network' = $Segment.subnets.Network
                 'Transport Zone Path' = $Segment.transport_zone_path
-                'Transport Zone Name' = Switch($Segment.transport_zone_path.Split('/')[-1]){
-                    $null {"Not Set"}
-                    default {"Not Set"}
-                }
+                'Transport Zone Name' = $Segment.transport_zone_path.Split('/')[-1]
                 'Connected Gateway' = $SegmentConnectedGatewayName
                 #'advanced_config' = $Segment.advanced_config
                 'Admin State' = $Segment.admin_state
