@@ -37,7 +37,7 @@ function Get-AbrNsxtSegments {
                 'Gateway' = $Segment.subnets.gateway_address
                 'Network' = $Segment.subnets.Network
                 'Transport Zone Path' = $Segment.transport_zone_path
-                'Transport Zone Name' = (get-abrNsxtApi -uri ("/api/v1/transport-zones/" + $Segment.transport_zone_path.Split('/')[-1])).display_name
+                'Transport Zone' = (get-abrNsxtApi -uri ("/api/v1/transport-zones/" + $Segment.transport_zone_path.Split('/')[-1])).display_name
                 'Connected Gateway' = $SegmentConnectedGatewayName
                 #'advanced_config' = $Segment.advanced_config
                 'Admin State' = $Segment.admin_state
@@ -64,8 +64,8 @@ function Get-AbrNsxtSegments {
         }
         $TableParams = @{
             Name = "All Segments - $($system)"
-            Headers = 'Name', 'VLANs', 'Network', 'Gateway', 'Transport Zone Name', 'Connected Gateway'
-            Columns = 'Display Name', 'VLANs', 'Network', 'Gateway', 'Transport Zone Name', 'Connected Gateway'
+            Headers = 'Name', 'VLANs', 'Network', 'Gateway', 'Transport Zone', 'Connected Gateway'
+            Columns = 'Display Name', 'VLANs', 'Network', 'Gateway', 'Transport Zone', 'Connected Gateway'
             #ColumnWidths = 10,10,10,10,10,50
             # 29,7,16,16,16,16
         }
