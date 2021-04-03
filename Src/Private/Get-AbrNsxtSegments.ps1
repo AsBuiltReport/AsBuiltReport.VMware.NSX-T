@@ -37,7 +37,7 @@ function Get-AbrNsxtSegments {
                 'Gateway' = $Segment.subnets.gateway_address
                 'Network' = $Segment.subnets.Network
                 'Transport Zone Path' = $Segment.transport_zone_path
-                'Transport Zone Name' = $Segment.transport_zone_path.Split('/')[-1]
+                'Transport Zone Name' = (get-abrNsxtApi -uri ("/api/v1/transport-zones/" + $Segment.transport_zone_path.Split('/')[-1])).display_name
                 'Connected Gateway' = $SegmentConnectedGatewayName
                 #'advanced_config' = $Segment.advanced_config
                 'Admin State' = $Segment.admin_state
