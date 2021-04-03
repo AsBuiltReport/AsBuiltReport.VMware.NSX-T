@@ -25,8 +25,8 @@ function Get-AbrNsxtTransportNodes {
                 [PSCustomObject]@{
                     'OS' = $TransportNode.node_deployment_info.os_type    
                     'OS Version' = $TransportNode.node_deployment_info.os_version
-                    'vCenter IP' = $TransportNode.node_deployment_info.manage_by_server
-                    'IP Address' = $TransportNode.node_deployment_info.ip_address
+                    'vCenter IP' = $TransportNode.node_deployment_info.managed_by_server
+                    'IP Address' = $TransportNode.node_deployment_info.ip_addresses
                     'FQDN' = $TransportNode.node_deployment_info.fqdn
                     'Discoverd IP Addresse(s)' = $TransportNode.node_deployment_info.discovered_ip_addresses
                     'Type' = $TransportNode.resource_type
