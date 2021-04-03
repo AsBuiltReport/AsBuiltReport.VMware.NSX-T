@@ -35,6 +35,11 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
     #region foreach loop
     foreach ($System in $Target) {
         Write-PScriboMessage "Segment InfoLevel set at $($InfoLevel.Segment)."
+        if ($InfoLevel.TransportNodes -gt 0) {
+            Section -Style Heading2 "Transport Nodes" {
+                Get-AbrNsxtTransportNodes
+            }
+        }        
         if ($InfoLevel.T0Routers -gt 0) {
             Section -Style Heading2 "Tier 0 Routers" {
                 Get-AbrNsxtT0Routers
