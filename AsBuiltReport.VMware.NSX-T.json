@@ -14,10 +14,22 @@
     "InfoLevel": {
         "_comment_": "Please refer to the AsBuiltReport project contributing guide for information about how to define InfoLevels.",
         "_comment_": "0 = Disabled, 1 = Enabled / Summary, 2 = Adv Summary, 3 = Detailed, 4 = Adv Detailed, 5 = Comprehensive",
+        "TransportNodes": 5,
+        "T0Routers": 5,
+        "T1Routers": 5,
+        "T1RouterDetail": {
+            "RouteTable": 1,
+            "ForwardingTable": 1
+        },
         "Segments": 5,
         "SegmentProfiles": {
             "IPDiscoveryIPv4": 1,
-            "IPDiscoveryIPv6": 0
+            "IPDiscoveryIPv6": 1,
+            "MacDiscovery": 1,
+            "Qos": 1,
+            "Security": 1,
+            "SpoofGuard": 1
+
         }
     },
     "HealthCheck": {}
