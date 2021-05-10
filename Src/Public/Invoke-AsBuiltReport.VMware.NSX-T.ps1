@@ -40,6 +40,7 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
                 Get-AbrNsxtTransportNodes
 #            }
         }        
+        Write-PScriboMessage "T0Router Debug Detail"
         Get-AbrNsxtT0RoutersDetail
         if ($InfoLevel.T1Routers -gt 0) {
             Section -Style Heading2 "Tier 1 Routers" {
