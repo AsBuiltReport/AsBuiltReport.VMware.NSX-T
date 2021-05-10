@@ -72,6 +72,7 @@ function Get-AbrNsxtT0RoutersDetail {
                         }
                         Section -Style Heading3 $T0RouterInfo.Name {
                             $T0RouterInfo | Table @TableParams
+                            Write-PScriboMessage "T0 Router Debug"
                         }
                     }
                 }
