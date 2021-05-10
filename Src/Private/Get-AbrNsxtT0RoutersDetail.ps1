@@ -61,7 +61,7 @@ function Get-AbrNsxtT0RoutersDetail {
                             'Revision' = $T0Router._revision
                         }
                         $TableParams = @{
-                            Name = "T0 Router - $($T0RouterInfo.Name)"
+                            Name = "T0 Router - $($T0RouterInfo."Display Name")"
                             #Headers = 'Name',         'Firewall', 'HA Mode', 'Failover Mode', 'ID',        'Transit Subnets'
                             #Columns = 'Display Name', 'Firewall', 'HA Mode', 'Failover Mode', 'Unique ID', 'Transit Subnets'
                             List = $true
@@ -70,7 +70,7 @@ function Get-AbrNsxtT0RoutersDetail {
                         if ($Report.ShowTableCaptions) {
                             $TableParams['Caption'] = "- $($TableParams.Name)"
                         }
-                        Section -Style Heading3 $T0RouterInfo.Name {
+                        Section -Style Heading3 $T0RouterInfo."Display Name"{
                             $T0RouterInfo | Table @TableParams
                             Write-PScriboMessage "T0 Router Debug"
                         }
