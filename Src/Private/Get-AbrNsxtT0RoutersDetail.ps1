@@ -62,8 +62,8 @@ function Get-AbrNsxtT0RoutersDetail {
                         }
                         $TableParams = @{
                             Name = "T0 Router - $($T0RouterInfo.Name)"
-                            Headers = 'Name',         'Firewall', 'HA Mode', 'Failover Mode', 'ID',        'Transit Subnets'
-                            Columns = 'Display Name', 'Firewall', 'HA Mode', 'Failover Mode', 'Unique ID', 'Transit Subnets'
+                            #Headers = 'Name',         'Firewall', 'HA Mode', 'Failover Mode', 'ID',        'Transit Subnets'
+                            #Columns = 'Display Name', 'Firewall', 'HA Mode', 'Failover Mode', 'Unique ID', 'Transit Subnets'
                             List = $true
                             #ColumnWidths = 20,10,20,20,30
                         }
