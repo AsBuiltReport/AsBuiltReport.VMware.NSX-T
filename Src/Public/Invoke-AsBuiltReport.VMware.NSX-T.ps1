@@ -40,12 +40,7 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
                 Get-AbrNsxtTransportNodes
 #            }
         }        
-        if ($InfoLevel.T0Routers -gt 0) {
-            Section -Style Heading2 "Tier 0 Routers" {
-                Get-AbrNsxtT0RoutersDetail
-                # Add notes to table explain preemptive, active/active?
-            }
-        }
+        Get-AbrNsxtT0RoutersDetail
         if ($InfoLevel.T1Routers -gt 0) {
             Section -Style Heading2 "Tier 1 Routers" {
                 Get-AbrNsxtT1Routers
