@@ -14,7 +14,6 @@ function Get-AbrNsxtT0Routers {
     #>
 
     begin {
-        Write-PscriboMessage "Collecting T0 Router information."
     }
 
     process {
