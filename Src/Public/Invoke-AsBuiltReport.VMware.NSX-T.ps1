@@ -26,6 +26,7 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
     $InfoLevel = $ReportConfig.InfoLevel
     $Options = $ReportConfig.Options
 
+
     # Used to set values to TitleCase where required
     $TextInfo = (Get-Culture).TextInfo
 
@@ -33,9 +34,33 @@ function Invoke-AsBuiltReport.VMware.NSX-T {
 	
     #region foreach loop
     foreach ($System in $Target) {
-		
-		
-		
+        Write-PScriboMessage "Segment InfoLevel set at $($InfoLevel.Segment)."
+        if ($InfoLevel.TransportNodes -gt 0) {
+#            Section -Style Heading2 "Transport Nodes" {
+                Get-AbrNsxtTransportNodes
+#            }
+        }        
+        Write-PScriboMessage "T0Router Debug Detail"
+        Get-AbrNsxtT0RoutersDetail
+        if ($InfoLevel.T1Routers -gt 0) {
+            Section -Style Heading2 "Tier 1 Routers" {
+                Get-AbrNsxtT1Routers
+            }
+        }
+        if ($InfoLevel.Segments -gt 0) {
+            Section -Style Heading2 "Segments" {
+                Get-AbrNsxtSegments 
+                if ($InfoLevel.Segments -gt 3) {
+                    Section -Style Heading3 "Profiles" {
+                        Get-AbrNsxtIpDiscoveryProfiles
+                        Get-AbrNsxtMacDiscoveryProfiles
+                        Get-AbrNsxtQosProfiles
+                        Get-AbrNsxtSegmentSecurityProfiles
+                        Get-AbrNsxtSpoofGuardProfiles
+                    }
+                }
+            }
+        }   
 	}
 	#endregion foreach loop
 }
